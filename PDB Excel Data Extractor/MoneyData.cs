@@ -24,7 +24,7 @@ namespace PDB_Excel_Data_Extractor
             }
             return ammountToLoad;
         }
-        private  int NoSpecialCards(string givenMoney)
+        private int NoSpecialCards(string givenMoney)
         {
             int amountOfMoney = 0;
             switch (givenMoney)
@@ -38,15 +38,19 @@ namespace PDB_Excel_Data_Extractor
                 case "110":
                     amountOfMoney = 144;
                     break;
+                case "80":
                 case "155":
                     amountOfMoney = 216;
                     break;
+                case "100":
                 case "195":
                     amountOfMoney = 288;
                     break;
+                case "125":
                 case "240":
                     amountOfMoney = 360;
                     break;
+                case "180":
                 case "350":
                     amountOfMoney = 700;
                     break;
@@ -64,9 +68,11 @@ namespace PDB_Excel_Data_Extractor
                         case "110":
                             amountOfMoney = 162;
                             break;
+                        case "80":
                         case "155":
                             amountOfMoney = 252;
                             break;
+                        case "100":
                         case "195":
                             amountOfMoney = 324;
                             break;
@@ -78,9 +84,11 @@ namespace PDB_Excel_Data_Extractor
                         case "110":
                             amountOfMoney = 180;
                             break;
+                        case "80":
                         case "155":
                             amountOfMoney = 288;
                             break;
+                        case "100":
                         case "195":
                             amountOfMoney = 360;
                             break;
@@ -92,9 +100,11 @@ namespace PDB_Excel_Data_Extractor
                         case "110":
                             amountOfMoney = 198;
                             break;
+                        case "80":
                         case "155":
                             amountOfMoney = 324;
                             break;
+                        case "100":
                         case "195":
                             amountOfMoney = 396;
                             break;
@@ -103,7 +113,7 @@ namespace PDB_Excel_Data_Extractor
             }
             return amountOfMoney;
         }
-
+        //Check for the card's expiration period based on the ammount of money
         public string CardPeriodExpiration(int year, int month, int day, int givenMoney)
         {
             string date = "";
@@ -118,7 +128,7 @@ namespace PDB_Excel_Data_Extractor
             }
             return date;
         }
-
+        //Checks if there is Deffered payment
         public string deferredPayment(string ammountOfMoney)
         {
             var typeOfPayment = "";

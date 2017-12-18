@@ -1,7 +1,9 @@
 ﻿
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.IO;
+using System.Linq;
 using System.Windows;
 using ClosedXML.Excel;
 
@@ -32,7 +34,7 @@ namespace PDB_Excel_Data_Extractor
         public void summary(int year, int month, int day)
         {
              FolderPopulation folders = new FolderPopulation();
-             folders.ExtractDataToArchive(year, month, day);
+            // folders.ExtractDataToArchive(year, month, day);
              PopulatingForInstructors(year, month, day);
         }
 
@@ -51,8 +53,22 @@ namespace PDB_Excel_Data_Extractor
                     string studioName = Path.GetFileName(namesOfStudios[p]);
                     studioName = studioName.Substring(0, studioName.Length - 5);
                     ColumnIndexGetter(sheetInfo);
-                    reader.ExportToExcel(ExpenseDataTable(sheetInfo, Instructors()[g], studioName, year, month, day), @"C:\PDB\_Компот-ЦЛ-Декември.xlsx", "Разход");
-                    reader.ExportToExcel(IncomeDataTable(sheetInfo, Instructors()[g], studioName, ТrueExpense(sheetInfo)), @"C:\PDB\_Компот-ЦЛ-Декември.xlsx", "Приход");
+                   // reader.ExportToExcel(ExpenseDataTable(sheetInfo, Instructors()[g], studioName, year, month, day), @"C:\PDB\_Компот-ЦЛ-Декември.xlsx", "Разход");
+                   // reader.ExportToExcel(IncomeDataTable(sheetInfo, Instructors()[g], studioName, ТrueExpense(sheetInfo)), @"C:\PDB\_Компот-ЦЛ-Декември.xlsx", "Приход");
+                    List<DataTable> data = CardValidityDataTable(sheetInfo, ТrueExpense(sheetInfo), year, month, day);
+                    for (int w = 0; w < data.Count; w++)
+                    {
+                        
+                      
+                        if (data[g].Rows[0]["WayOfPaying"].ToString().Equals("50%"))
+                        {
+                            reader.ExportToExcel(data[g], @"C:\PDB\_Компот-ЦЛ-Декември.xlsx", "Приход", "Red");
+                        }
+                        else
+                        {
+                            reader.ExportToExcel(data[g], @"C:\PDB\_Компот-ЦЛ-Декември.xlsx", "Приход");
+                        }
+                    }
                 }
             }
         }
@@ -101,14 +117,16 @@ namespace PDB_Excel_Data_Extractor
             table.Rows.Add(date, studioName, motive, instrctorName, honorarySum);
             return table;
         }
-        private DataTable CardValidityDataTable(DataTable sheetInfo, List<int> trueExpenses, int year, int month, int day)
+        private List<DataTable> CardValidityDataTable(DataTable sheetInfo, List<int> trueExpenses, int year, int month, int day)
         {
             DataStrctures structure = new DataStrctures();
-            DataTable table = structure.CardValidityTableStructure();
+           
+            List<DataTable> listOfTables = new List<DataTable>();
             MoneyData moneyData = new MoneyData();
            
             for (int i = 0; i < trueExpenses.Count; i++)
             {
+                DataTable table = structure.CardValidityTableStructure();
                 int indexOfRow = trueExpenses[i];
                 var money = sheetInfo.Rows[indexOfRow][moneyIndex].ToString();
                 var cardName = sheetInfo.Rows[indexOfRow][nOfCardIndex].ToString();
@@ -116,15 +134,16 @@ namespace PDB_Excel_Data_Extractor
                 var wayOfPaying = moneyData.deferredPayment(money);
 
                  var typeOfood = sheetInfo.Rows[indexOfRow][typeOfGoodIndex].ToString();
-                var ammountOfMoney = moneyData.Ammout(sheetInfo.Rows[indexOfRow][moneyIndex].ToString(),
+                var ammountOfMoney = moneyData.Ammout(money,
                    typeOfood);
                 var ValidityTo = moneyData.CardPeriodExpiration(year, month, day, ammountOfMoney);
                 if (!cardName.Equals(""))
                 {
-                    table.Rows.Add(cardName, firstAndFamilyName, date, ValidityTo, wayOfPaying, ammountOfMoney);
+                    table.Rows.Add(cardName, firstAndFamilyName, date, ValidityTo, typeOfood ,wayOfPaying, ammountOfMoney);
+                    listOfTables.Add(table);
                 }
             }
-            return table;
+            return listOfTables;
         }
         private List<int> ТrueExpense(DataTable sheetInfo)
         {
