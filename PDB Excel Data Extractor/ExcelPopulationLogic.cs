@@ -58,15 +58,13 @@ namespace PDB_Excel_Data_Extractor
                     List<DataTable> data = CardValidityDataTable(sheetInfo, ТrueExpense(sheetInfo), year, month, day);
                     for (int w = 0; w < data.Count; w++)
                     {
-                        
-                      
-                        if (data[g].Rows[0]["WayOfPaying"].ToString().Equals("50%"))
+                        if (data[w].Rows[0]["WayOfPaying"].ToString().Equals("50%"))
                         {
-                            reader.ExportToExcel(data[g], @"C:\PDB\_Компот-ЦЛ-Декември.xlsx", "Приход", "Red");
+                            reader.ExportToExcel(data[w], @"C:\PDB\_Лютеница.xlsx", "Справка карти", "Red");
                         }
                         else
                         {
-                            reader.ExportToExcel(data[g], @"C:\PDB\_Компот-ЦЛ-Декември.xlsx", "Приход");
+                            reader.ExportToExcel(data[w], @"C:\PDB\_Лютеница.xlsx", "Справка карти");
                         }
                     }
                 }
@@ -137,7 +135,7 @@ namespace PDB_Excel_Data_Extractor
                 var ammountOfMoney = moneyData.Ammout(money,
                    typeOfood);
                 var ValidityTo = moneyData.CardPeriodExpiration(year, month, day, ammountOfMoney);
-                if (!cardName.Equals(""))
+                if (!cardName.Equals("")|| typeOfood.Equals("ваучер"))
                 {
                     table.Rows.Add(cardName, firstAndFamilyName, date, ValidityTo, typeOfood ,wayOfPaying, ammountOfMoney);
                     listOfTables.Add(table);
