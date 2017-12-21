@@ -60,6 +60,8 @@ namespace PDB_Excel_Data_Extractor
         {
             ExcelReader reader = new ExcelReader();
             DataTable sheetInfo = null;
+            IndexGetters indexes = new IndexGetters();
+          
             string expenseFile = @"C:\PDB\_Лютеница.xlsx";
             date = DateOfExportedFile(year, month, day);
             ColumnIndexGetterCardInfoFile(reader.ExcelToDataTable("Справка карти", expenseFile));
@@ -69,6 +71,7 @@ namespace PDB_Excel_Data_Extractor
                 for (int p = 0; p < namesOfStudios.Length; p++)
                 {
                     sheetInfo = reader.ExcelToDataTable("Sheet1", namesOfStudios[p]);
+                    indexes.listOfWorkouts(sheetInfo);
                     string studioName = Path.GetFileName(namesOfStudios[p]);
                     studioName = studioName.Substring(0, studioName.Length - 5);
                     ColumnIndexGetterInstructorFile(sheetInfo);

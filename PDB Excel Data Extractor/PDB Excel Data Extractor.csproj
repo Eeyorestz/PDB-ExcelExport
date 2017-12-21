@@ -89,6 +89,7 @@
     <Compile Include="FolderPopulation.cs" />
     <Compile Include="Excel.cs" />
     <Compile Include="ExcelPopulationLogic.cs" />
+    <Compile Include="IndexGetters.cs" />
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
