@@ -50,7 +50,7 @@ namespace PDB_Excel_Data_Extractor
         /// </summary>
         /// <param name="fileName">The name of the Excel file</param>
         /// <param name="sheetName">The name of the worksheet in the Excel file</param>
-        public void PopulateToDataTable( string sheetName, string filePath)
+        public void PopulateToDataTable(string sheetName, string filePath)
         {
             DataTable table = ExcelToDataTable( sheetName, filePath);
 
@@ -88,16 +88,30 @@ namespace PDB_Excel_Data_Extractor
                     RowForNewData.Style.Font.FontColor = XLColor.Red;
                 }
             }
-            
-            
-
             //InsertData -  the data from the DataTable without the Column names ; InsertTable - inserts the data with the Column names
             CellForNewData.InsertData(resultTable);
-         
 
             Workbook.SaveAs(fileLocation);
         }
+        public void EditCellValue(string fileLocation, string sheetName, string newCellValue, int row, int column)
+        {
+            XLWorkbook Workbook = new XLWorkbook(fileLocation);
+            IXLWorksheet Worksheet = Workbook.Worksheet(sheetName);
+            IXLCell CellForNewData = Worksheet.Cell(row, column);
+            IXLRow Row = Worksheet.Row(row);
 
+            CellForNewData.Clear();
+            CellForNewData.SetValue(newCellValue);
+            Workbook.SaveAs(fileLocation);
+        }
+        public void EditRowColor(string fileLocation, string sheetName, int row)
+        {
+            XLWorkbook Workbook = new XLWorkbook(fileLocation);
+            IXLWorksheet Worksheet = Workbook.Worksheet(sheetName);
+            IXLRow excelRow = Worksheet.Row(row);
+            excelRow.Style.Fill.BackgroundColor = XLColor.Yellow;
+            Workbook.SaveAs(fileLocation);
+        }
         /// <summary>
         /// Read the data from the a Collection
         /// </summary>

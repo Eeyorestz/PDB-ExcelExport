@@ -6,7 +6,7 @@ using System.IO;
 using System.Linq;
 using System.Windows;
 using ClosedXML.Excel;
-
+using DocumentFormat.OpenXml.Presentation;
 
 
 namespace PDB_Excel_Data_Extractor
@@ -38,7 +38,7 @@ namespace PDB_Excel_Data_Extractor
         private int aerialYogaKids;
         #endregion
         private string date = "";
-
+        private string  expenseFile = @"C:\PDB\_Лютеница.xlsx";
         public void SeedingSharedData(int year, int month)
         {
             FolderPopulation folders = new FolderPopulation();            
@@ -60,21 +60,21 @@ namespace PDB_Excel_Data_Extractor
         {
             ExcelReader reader = new ExcelReader();
             DataTable sheetInfo = null;
-            IndexGetters indexes = new IndexGetters();
-          
-            string expenseFile = @"C:\PDB\_Лютеница.xlsx";
+         
             date = DateOfExportedFile(year, month, day);
-            ColumnIndexGetterCardInfoFile(reader.ExcelToDataTable("Справка карти", expenseFile));
+        
             for (int g = 0; g < Instructors().Length; g++)
             {
                 string[] namesOfStudios = GetFileNames(year, MonthName(month), day, Instructors()[g]);
                 for (int p = 0; p < namesOfStudios.Length; p++)
                 {
                     sheetInfo = reader.ExcelToDataTable("Sheet1", namesOfStudios[p]);
-                    indexes.listOfWorkouts(sheetInfo);
+                  
+                    ColumnIndexGetterInstructorFile(sheetInfo);
+                  
                     string studioName = Path.GetFileName(namesOfStudios[p]);
                     studioName = studioName.Substring(0, studioName.Length - 5);
-                    ColumnIndexGetterInstructorFile(sheetInfo);
+                  
                    // reader.ExportToExcel(ExpenseDataTable(sheetInfo, Instructors()[g], studioName, year, month, day), @"C:\PDB\_Компот-ЦЛ-Декември.xlsx", "Разход");
                    // reader.ExportToExcel(IncomeDataTable(sheetInfo, Instructors()[g], studioName, ТrueExpense(sheetInfo)), @"C:\PDB\_Компот-ЦЛ-Декември.xlsx", "Приход");
                     List<DataTable> data = CardValidityDataTable(sheetInfo, ТrueExpense(sheetInfo), year, month, day);
@@ -89,10 +89,10 @@ namespace PDB_Excel_Data_Extractor
                             reader.ExportToExcel(data[w], expenseFile, "Справка карти");
                         }
                     }
+                    CardValidityPupulation(sheetInfo);
                 }
             }
         }
-
         private DataTable IncomeDataTable(DataTable sheetInfo,string instrctorName, string studioName ,List<int> trueExpenses)
         {
             DataStrctures structure = new DataStrctures();
@@ -165,6 +165,47 @@ namespace PDB_Excel_Data_Extractor
             }
             return listOfTables;
         }
+
+        private void CardValidityPupulation(DataTable sheetInfo)
+        {
+            IndexGetters indexes = new IndexGetters();
+            ExcelReader excel = new ExcelReader();
+            DataTable expenseInfo = excel.ExcelToDataTable("Справка карти", expenseFile);
+            var workouts = indexes.listOfWorkouts(sheetInfo);
+            var workoutsIndexes = indexes.Ranges(sheetInfo);
+            var workoutType = "";
+            
+
+            for (int i = 0; i < sheetInfo.Rows.Count; i++)
+            {
+                var cardName = sheetInfo.Rows[i][nOfCardIndex].ToString();
+                var typeOfGood = sheetInfo.Rows[i][typeOfGoodIndex].ToString();
+                var ammount = 0;
+                if (!cardName.Equals("") && !cardName.Equals("N: на карта")&& !typeOfGood.Equals("ваучер"))
+                {
+                    for (int j = 0; j < workouts.Count; j++)
+                    {
+                        if (i >= workoutsIndexes[j][0] && i < workoutsIndexes[j][1])
+                        {
+                            workoutType = workouts[j];
+                            var cardRowNumber = indexes.RowOfCard(expenseInfo, cardName);
+                            var cardColumnNumber = ColumnIndexGetterCardInfoFile(expenseInfo, workoutType);
+                            if (!expenseInfo.Rows[cardRowNumber][cardColumnNumber].ToString().Equals(""))
+                            {
+                                ammount = int.Parse(expenseInfo.Rows[cardRowNumber][cardColumnNumber].ToString());
+                            }
+                            var sum = SumForWorkoutType(ammount, workoutType).ToString();
+                            excel.EditCellValue(expenseFile, "Справка карти", sum ,cardRowNumber+1, cardColumnNumber+1 );
+                            excel.EditRowColor(expenseFile, "Справка карти", cardRowNumber + 1);
+                            break;
+                        }
+                    }
+                }
+            }
+            
+        }
+
+
         private List<int> ТrueExpense(DataTable sheetInfo)
         {
             List<int> list = new List<int>();
@@ -179,6 +220,8 @@ namespace PDB_Excel_Data_Extractor
             }
             return list;
         }
+
+        #region IndexPopulation
         private void ColumnIndexGetterInstructorFile(DataTable sheetInfo)
         {
             for (int i = 0; i < sheetInfo.Columns.Count; i++)
@@ -208,51 +251,26 @@ namespace PDB_Excel_Data_Extractor
                         break;
                 }
             }
-           
+
         }
-        private void ColumnIndexGetterCardInfoFile(DataTable sheetInfo)
+        private int ColumnIndexGetterCardInfoFile(DataTable sheetInfo, string typeOfWorkout)
         {
+            int returnIndex = 0;
             for (int i = 0; i < sheetInfo.Columns.Count; i++)
             {
                 var tf = sheetInfo.Rows[17][i].ToString().ToLower();
-                switch (sheetInfo.Rows[17][i].ToString().ToLower())
+
+                if (sheetInfo.Rows[17][i].ToString().ToLower().Equals(typeOfWorkout))
                 {
-                    case "пол денс":
-                        poleDanceIndex = i;
-                        break;
-                    case "стречинг":
-                        stretchingIndex = i;
-                        break;
-                    case "хатха йога":
-                        hathaYogaIndex = i;
-                        break;
-                    case "въздушна йога":
-                        airYogaIndex = i;
-                        break;
-                    case "класическа йога":
-                        classicYogaIndex = i;
-                        break;
-                    case "въздушна акробатика":
-                        aerialPoleIndex = i;
-                        break;
-                    case "екзотик пол денс":
-                        exocitPoleDanceIndex = i;
-                        break;
-                    case "детска йога":
-                        kidsYogaIndex = i;
-                        break;
-                    case "handstand":
-                        hathaYogaIndex = i;
-                        break;
-                    case "детска акробатика":
-                        aerialYogaKids = i;
-                        break;
-                    case "пол фит":
-                        aerialYogaKids = i;
-                        break;
+                    returnIndex = i;
                 }
             }
+            return returnIndex;
 
         }
+
+
+        #endregion
+
     }
 }

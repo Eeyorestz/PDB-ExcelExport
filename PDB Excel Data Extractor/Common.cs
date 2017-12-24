@@ -61,7 +61,6 @@ namespace PDB_Excel_Data_Extractor
             string[] files = Directory.GetFiles(ArchiveDayDirectory(year, monthName, day, instructorName));
             return files;
         }
-
         internal static double delimterConvertor(string number)
         {
             if (number.Contains("."))
@@ -69,6 +68,28 @@ namespace PDB_Excel_Data_Extractor
                 number = number.Replace(".", ",");
             }
             return Double.Parse(number);
+        }
+
+        internal static int SumForWorkoutType(int ammount, string workoutType)
+        {
+            int sumToAdd = 0;
+            
+            switch (workoutType)
+            {
+                case "пол денс":
+                    sumToAdd = 18;
+                    break;
+                case "въздушна йога":
+                    sumToAdd = 15;
+                    break;
+                case "стречинг":
+                case "йога":
+                case "детска йога":
+                    sumToAdd = 12;
+                    break;
+            }
+            int sum = ammount + sumToAdd;
+            return sum;
         }
     }
 }

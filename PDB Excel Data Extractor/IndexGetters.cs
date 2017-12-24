@@ -6,7 +6,6 @@ namespace PDB_Excel_Data_Extractor
 {
     public class IndexGetters
     {
-       
         public  List<List<int>> Ranges(DataTable dataTable)
         {
             List<int> listOf = ListOfAllRanges(dataTable);
@@ -44,5 +43,20 @@ namespace PDB_Excel_Data_Extractor
             }
             return listOfIntegers;
         }
+
+        public int RowOfCard(DataTable dataTable, string cardName)
+        {
+            int rowIndex = 0;
+            for (int i = 0; i < dataTable.Rows.Count; i++)
+            {
+                var ff = dataTable.Rows[i][0].ToString();
+                if (dataTable.Rows[i][0].ToString().Equals(cardName))
+                {
+                    rowIndex = i;
+                    break;
+                }
+            }
+            return rowIndex;
+        } 
     }
 }
