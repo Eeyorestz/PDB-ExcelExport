@@ -51,9 +51,8 @@ namespace PDB_Excel_Data_Extractor
 
         internal static string DateOfExportedFile(int year, int month, int day)
         {
-            var dat = new DateTime(year, month, day);
-            string date = dat.ToString("dd.MM.yyyy");
-            return date;
+            var dat = new DateTime(year, month, day).ToString("dd.MM.yyyy");
+            return dat;
         }
 
         internal static string[] GetFileNames(int year, string monthName, int day, string instructorName)
@@ -69,7 +68,6 @@ namespace PDB_Excel_Data_Extractor
             }
             return Double.Parse(number);
         }
-
         internal static int SumForWorkoutType(int ammount, string workoutType)
         {
             int sumToAdd = 0;
@@ -77,6 +75,9 @@ namespace PDB_Excel_Data_Extractor
             switch (workoutType)
             {
                 case "пол денс":
+                case "пол фит":
+                case "екзотик пол денс":
+                case "въздушна акробатика":
                     sumToAdd = 18;
                     break;
                 case "въздушна йога":
@@ -85,6 +86,8 @@ namespace PDB_Excel_Data_Extractor
                 case "стречинг":
                 case "йога":
                 case "детска йога":
+                case "детска акробатика":
+                case "хендстенд":
                     sumToAdd = 12;
                     break;
             }

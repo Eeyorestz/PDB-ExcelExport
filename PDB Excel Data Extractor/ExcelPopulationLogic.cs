@@ -175,7 +175,6 @@ namespace PDB_Excel_Data_Extractor
             var workoutsIndexes = indexes.Ranges(sheetInfo);
             var workoutType = "";
             
-
             for (int i = 0; i < sheetInfo.Rows.Count; i++)
             {
                 var cardName = sheetInfo.Rows[i][nOfCardIndex].ToString();
@@ -195,17 +194,14 @@ namespace PDB_Excel_Data_Extractor
                                 ammount = int.Parse(expenseInfo.Rows[cardRowNumber][cardColumnNumber].ToString());
                             }
                             var sum = SumForWorkoutType(ammount, workoutType).ToString();
-                            excel.EditCellValue(expenseFile, "Справка карти", sum ,cardRowNumber+1, cardColumnNumber+1 );
-                            excel.EditRowColor(expenseFile, "Справка карти", cardRowNumber + 1);
+                            excel.EditCellValue(expenseFile, "Справка карти", sum ,cardRowNumber+1, cardColumnNumber+1);                       
                             break;
                         }
                     }
                 }
             }
-            
+            excel.EditRowColor(expenseFile, "Справка карти", (indexes.CardExpirationStartingRowIndex(expenseInfo) + 2), date);
         }
-
-
         private List<int> ТrueExpense(DataTable sheetInfo)
         {
             List<int> list = new List<int>();
@@ -255,21 +251,19 @@ namespace PDB_Excel_Data_Extractor
         }
         private int ColumnIndexGetterCardInfoFile(DataTable sheetInfo, string typeOfWorkout)
         {
+            IndexGetters index = new IndexGetters();
             int returnIndex = 0;
             for (int i = 0; i < sheetInfo.Columns.Count; i++)
             {
-                var tf = sheetInfo.Rows[17][i].ToString().ToLower();
+                var tf = sheetInfo.Rows[index.CardExpirationStartingRowIndex(sheetInfo)][i].ToString().ToLower();
 
-                if (sheetInfo.Rows[17][i].ToString().ToLower().Equals(typeOfWorkout))
+                if (sheetInfo.Rows[index.CardExpirationStartingRowIndex(sheetInfo)][i].ToString().ToLower().Equals(typeOfWorkout))
                 {
                     returnIndex = i;
                 }
             }
             return returnIndex;
-
         }
-
-
         #endregion
 
     }

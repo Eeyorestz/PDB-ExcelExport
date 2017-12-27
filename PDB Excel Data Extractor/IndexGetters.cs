@@ -57,6 +57,20 @@ namespace PDB_Excel_Data_Extractor
                 }
             }
             return rowIndex;
-        } 
+        }
+
+        public int CardExpirationStartingRowIndex(DataTable table)
+        {
+            int index = 0;
+            for (int i = 0; i < table.Rows.Count; i++)
+            {
+                if (table.Rows[i][0].ToString().Contains("Номер на карта"))
+                {
+                    index = i;
+                    break;
+                }
+            }
+            return index;
+        }
     }
 }
