@@ -40,7 +40,17 @@ namespace PDB_Excel_Data_Extractor
             table.Columns.Add("ActualAmmount", typeof(int));
             return table;
         }
-
+        public DataTable AvailabilityTableStructure()
+        {
+            DataTable table = new DataTable();
+            table.Columns.Add("Date", typeof(string));
+            table.Columns.Add("TypeOfBalance", typeof(string));
+            table.Columns.Add("Sum", typeof(int));
+            table.Columns.Add("Clarifications", typeof(string));
+            table.Columns.Add("SecondTypeOfBalance", typeof(string));
+            table.Columns.Add("Secondum", typeof(int));        
+            return table;
+        }
         public DataTable IndexGetterStructure()
         {
             DataTable table = new DataTable();

@@ -15,13 +15,13 @@ namespace PDB_Excel_Data_Extractor
     {
 
         #region InstructorsSheetIndexes
-        private int nOfCardIndex = 0;
-        private int typeOfGoodIndex = 0;
-        private int firstAndFamiliyNameIndex = 0;
-        private int honoraryIndex = 0;
-        private int moneyIndex = 0;
-        private int receiptIndex = 0;
-        private int additionalInfoIndex = 0;
+        private int nOfCardIndex ;
+        private int typeOfGoodIndex ;
+        private int firstAndFamiliyNameIndex ;
+        private int honoraryIndex ;
+        private int moneyIndex ;
+        private int receiptIndex ;
+        private int additionalInfoIndex;
 
 
         #endregion
@@ -38,7 +38,7 @@ namespace PDB_Excel_Data_Extractor
         private int aerialYogaKids;
         #endregion
         private string date = "";
-        private string  expenseFile = @"C:\PDB\_Лютеница.xlsx";
+        readonly string  expenseFile = AssemblyDirectory + @"\Zimnina\_Лютеница.xlsx";
         public void SeedingSharedData(int year, int month)
         {
             FolderPopulation folders = new FolderPopulation();            
@@ -51,7 +51,7 @@ namespace PDB_Excel_Data_Extractor
         public void summary(int year, int month, int day)
         {
              FolderPopulation folders = new FolderPopulation();
-            // folders.ExtractDataToArchive(year, month, day);
+             folders.ExtractDataToArchive(year, month, day);
              PopulatingForInstructors(year, month, day);
         }
 
@@ -74,9 +74,17 @@ namespace PDB_Excel_Data_Extractor
                   
                     string studioName = Path.GetFileName(namesOfStudios[p]);
                     studioName = studioName.Substring(0, studioName.Length - 5);
-                  
-                   // reader.ExportToExcel(ExpenseDataTable(sheetInfo, Instructors()[g], studioName, year, month, day), @"C:\PDB\_Компот-ЦЛ-Декември.xlsx", "Разход");
-                   // reader.ExportToExcel(IncomeDataTable(sheetInfo, Instructors()[g], studioName, ТrueExpense(sheetInfo)), @"C:\PDB\_Компот-ЦЛ-Декември.xlsx", "Приход");
+                    if (studioName.Equals("Студентски"))
+                    {
+                        //reader.ExportToExcel(ExpenseDataTable(sheetInfo, Instructors()[g], studioName, year, month, day), AssemblyDirectory+@"\Zimnina\_Компот-Студентски.xlsx", "Разход");
+                        // reader.ExportToExcel(IncomeDataTable(sheetInfo, Instructors()[g], studioName, ТrueExpense(sheetInfo)), AssemblyDirectory+@"\Zimnina\_Компот-Студентски.xlsx", "Приход");
+                    }
+                    else
+                    {
+                        reader.ExportToExcel(ExpenseDataTable(sheetInfo, Instructors()[g], studioName, year, month, day), AssemblyDirectory+@"\Zimnina\_Компот-ЦЛ.xlsx", "Разход");
+                        reader.ExportToExcel(IncomeDataTable(sheetInfo, Instructors()[g], studioName, ТrueExpense(sheetInfo)), AssemblyDirectory+@"\Zimnina\_Компот-ЦЛ.xlsx", "Приход");
+                    }
+
                     List<DataTable> data = CardValidityDataTable(sheetInfo, ТrueExpense(sheetInfo), year, month, day);
                     for (int w = 0; w < data.Count; w++)
                     {
@@ -171,7 +179,7 @@ namespace PDB_Excel_Data_Extractor
             IndexGetters indexes = new IndexGetters();
             ExcelReader excel = new ExcelReader();
             DataTable expenseInfo = excel.ExcelToDataTable("Справка карти", expenseFile);
-            var workouts = indexes.listOfWorkouts(sheetInfo);
+            var workouts = indexes.ListOfWorkouts(sheetInfo);
             var workoutsIndexes = indexes.Ranges(sheetInfo);
             var workoutType = "";
             
@@ -255,8 +263,6 @@ namespace PDB_Excel_Data_Extractor
             int returnIndex = 0;
             for (int i = 0; i < sheetInfo.Columns.Count; i++)
             {
-                var tf = sheetInfo.Rows[index.CardExpirationStartingRowIndex(sheetInfo)][i].ToString().ToLower();
-
                 if (sheetInfo.Rows[index.CardExpirationStartingRowIndex(sheetInfo)][i].ToString().ToLower().Equals(typeOfWorkout))
                 {
                     returnIndex = i;

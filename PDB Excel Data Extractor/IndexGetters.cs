@@ -6,7 +6,11 @@ namespace PDB_Excel_Data_Extractor
 {
     public class IndexGetters
     {
-        public  List<List<int>> Ranges(DataTable dataTable)
+        /// <summary>
+        /// Gets the ranges for the type of workout 
+        /// Еxample 1 to 15 row will be the  Ranges[0][0] and Ranges[0][1] will be those indexes
+        /// </summary>
+        public List<List<int>> Ranges(DataTable dataTable)
         {
             List<int> listOf = ListOfAllRanges(dataTable);
             List<List<int>> list = new List<List<int>>();
@@ -20,7 +24,11 @@ namespace PDB_Excel_Data_Extractor
             return list;
         }
 
-        public List<string> listOfWorkouts(DataTable dataTable)
+        /// <summary>
+        /// Gets the index of rows for the type of workout 
+        /// Еxample 1 to 15 row will be the  Ranges[0][0] and Ranges[0][1] will be those indexes
+        /// </summary>
+        public List<string> ListOfWorkouts(DataTable dataTable)
         {
             List<string> list = new List<string>();
             List<int> listOf = ListOfAllRanges(dataTable);

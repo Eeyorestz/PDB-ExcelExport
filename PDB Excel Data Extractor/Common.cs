@@ -1,10 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Data;
+
 
 namespace PDB_Excel_Data_Extractor
 {
@@ -12,28 +10,24 @@ namespace PDB_Excel_Data_Extractor
     {
         internal static string[] Instructors()
         {
-            string[] lines = File.ReadAllLines(@"C:\PDB\Instructors.txt");
+            string[] lines = File.ReadAllLines(AssemblyDirectory+@"\Templates\Instructors.txt");
             return lines;
         }
-
         internal static string MonthName(int month)
         {
             string monthName = CultureInfo.CurrentUICulture.DateTimeFormat.GetMonthName(month);
             return monthName;
         }
-
         internal static string InstructorsDirectory(int year, string instructorName)
         {
-            string instructorsDirectory = @"C:\PDB\Share\" + year + "" + @"\" + instructorName + "";
+            string instructorsDirectory = AssemblyDirectory +@"\Share\" + year + "" + @"\" + instructorName + "";
             return instructorsDirectory;
         }
-
         internal static string ArchiveDayDirectory(int year, string monthName, int day, string instructorName)
         {
-            string dayDirectory = @"C:\PDB\Archive\" + year + "" + @"\" + monthName + @"\" + day + @"\" + instructorName;
+            string dayDirectory = AssemblyDirectory+@"\Archive\" + year + "" + @"\" + monthName + @"\" + day + @"\" + instructorName;
             return dayDirectory;
         }
-
         internal static void CopyPasteFiles(string sourcePath, string destinationPath)
         {
             string fileName = "";
@@ -45,16 +39,18 @@ namespace PDB_Excel_Data_Extractor
                 // Use static Path methods to extract only the file name from the path.
                 fileName = Path.GetFileName(s);
                 destFile = Path.Combine(destinationPath, fileName);
-                File.Copy(s, destFile, true);
+                if (FilledFileCheck(s))
+                {
+                    File.Copy(s, destFile, true);
+                }
+ 
             }
         }
-
         internal static string DateOfExportedFile(int year, int month, int day)
         {
             var dat = new DateTime(year, month, day).ToString("dd.MM.yyyy");
             return dat;
         }
-
         internal static string[] GetFileNames(int year, string monthName, int day, string instructorName)
         {
             string[] files = Directory.GetFiles(ArchiveDayDirectory(year, monthName, day, instructorName));
@@ -93,6 +89,32 @@ namespace PDB_Excel_Data_Extractor
             }
             int sum = ammount + sumToAdd;
             return sum;
+        }
+        internal static string AssemblyDirectory
+        {
+            get
+            {
+                string codeBase = System.Reflection.Assembly.GetExecutingAssembly().CodeBase;
+                UriBuilder uri = new UriBuilder(codeBase);
+                string path = Uri.UnescapeDataString(uri.Path);
+                return Path.GetDirectoryName(path);
+            }
+        }
+        private static bool FilledFileCheck(string pathFile)
+        {
+            bool check = false;
+            ExcelReader excel = new ExcelReader();
+            DataTable table = excel.ExcelToDataTable("Sheet1",pathFile);
+            for (int i = 1; i < table.Rows.Count; i++)
+            {
+                string ggg = table.Rows[i][3].ToString();
+                if (!table.Rows[i][3].ToString().Equals("")&& !table.Rows[i][3].ToString().Contains("име и фамилия"))
+                {
+                    check = true;
+                    break;
+                }
+            }  
+            return check;
         }
     }
 }

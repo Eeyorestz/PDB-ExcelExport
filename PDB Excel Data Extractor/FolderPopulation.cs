@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using DocumentFormat.OpenXml.Drawing.Charts;
 
 namespace PDB_Excel_Data_Extractor
 {
@@ -30,12 +31,11 @@ namespace PDB_Excel_Data_Extractor
                 {
                     string dayDirectory = InstructorsDirectory(year, Instructors()[t]) + @"\" + (i + 1);
                     Directory.CreateDirectory(dayDirectory);
-                    string sourcePath = @"C:\PDB\Templates\" + DayOfTheWeek(year, month, (i + 1));
+                    string sourcePath = AssemblyDirectory+@"\Templates\" + DayOfTheWeek(year, month, (i + 1));
                     CopyPasteFiles(sourcePath, dayDirectory);
                 }
             }
         }
-
         private  int GetDaysInMonth(int year, int month)
         {
             int daysInMonth = DateTime.DaysInMonth(year, month); ;
@@ -59,5 +59,7 @@ namespace PDB_Excel_Data_Extractor
             string dayOfTheWeek = dt.DayOfWeek.ToString();
             return dayOfTheWeek;
         }
+
+        
     }
 }
