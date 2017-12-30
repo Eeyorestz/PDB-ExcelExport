@@ -32,7 +32,7 @@ namespace PDB_Excel_Data_Extractor
                     string dayDirectory = InstructorsDirectory(year, Instructors()[t]) + @"\" + (i + 1);
                     Directory.CreateDirectory(dayDirectory);
                     string sourcePath = AssemblyDirectory+@"\Templates\" + DayOfTheWeek(year, month, (i + 1));
-                    CopyPasteFiles(sourcePath, dayDirectory);
+                    CopyPasteFiles(sourcePath, dayDirectory, true);
                 }
             }
         }

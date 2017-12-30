@@ -39,7 +39,7 @@ namespace PDB_Excel_Data_Extractor
             return list;
         }
 
-        private List<int> ListOfAllRanges(DataTable dataTable)
+        public List<int> ListOfAllRanges(DataTable dataTable)
         {
             List<int> listOfIntegers = new List<int>();
             for (int i = 0; i < dataTable.Rows.Count; i++)

@@ -80,9 +80,9 @@ namespace PDB_Excel_Data_Extractor
         {
             XLWorkbook Workbook = new XLWorkbook(fileLocation);
             IXLWorksheet Worksheet = Workbook.Worksheet(sheetName);
-            IXLRows rows = Worksheet.Rows();
-           
-            for (int i = startIndex; i < rows.Count(); i++)
+            int NumberOfLastRow = Worksheet.LastRowUsed().RowNumber();
+
+            for (int i = startIndex; i < NumberOfLastRow; i++)
             {
                 var validity = Convert.ToDateTime(Worksheet.Cell(i, 4).Value);
                 var todayDate = Convert.ToDateTime(date);

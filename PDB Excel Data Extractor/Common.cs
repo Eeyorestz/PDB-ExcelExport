@@ -28,7 +28,7 @@ namespace PDB_Excel_Data_Extractor
             string dayDirectory = AssemblyDirectory+@"\Archive\" + year + "" + @"\" + monthName + @"\" + day + @"\" + instructorName;
             return dayDirectory;
         }
-        internal static void CopyPasteFiles(string sourcePath, string destinationPath)
+        internal static void CopyPasteFiles(string sourcePath, string destinationPath, bool emptyCheck = false)
         {
             string fileName = "";
             string destFile = "";
@@ -39,7 +39,7 @@ namespace PDB_Excel_Data_Extractor
                 // Use static Path methods to extract only the file name from the path.
                 fileName = Path.GetFileName(s);
                 destFile = Path.Combine(destinationPath, fileName);
-                if (FilledFileCheck(s))
+                if (FilledFileCheck(s)|| emptyCheck)
                 {
                     File.Copy(s, destFile, true);
                 }
@@ -104,6 +104,49 @@ namespace PDB_Excel_Data_Extractor
                 return Path.GetDirectoryName(path);
             }
         }
+
+        internal static DataTable LowestOpeningBalance(DataTable table, string studio)
+        {
+            double balance = 0;
+            DataStrctures tables = new DataStrctures();
+            DataTable tableToReturn = tables.StartingBalanceTableStructure();
+            IndexGetters indexes = new IndexGetters();
+            var indexOfRanges = indexes.ListOfAllRanges(table);
+            var balanceString = "";
+            var time = "";
+            for (int i = 0; i < indexOfRanges.Count; i++)
+            {
+                int range = indexOfRanges[i];
+               
+                balanceString = table.Rows[range + 4][0].ToString().Substring(3);
+                 if (!balanceString.Equals(""))
+                {
+                    balance = Convert.ToDouble(balanceString);
+                    time = table.Rows[range][0].ToString().Substring(0, 5);
+                    tableToReturn.Rows.Add(time, balance, studio);
+                }
+            }
+            return tableToReturn;
+        }
+        public static void CardExpirationValidation(string cardValidityTo)
+        {
+
+            var validity = Convert.ToDateTime("21.12.2017");
+            var todayDate = Convert.ToDateTime("22.12.2017");
+            int ggg = DateTime.Compare(validity, todayDate);
+
+            if (DateTime.Compare(validity, todayDate) < 0)
+            {
+                Console.WriteLine("Red");
+            }
+            else if (DateTime.Compare(validity, todayDate) == 0)
+            {
+                Console.WriteLine("Yellow");
+
+            }
+        }
+
+
         private static bool FilledFileCheck(string pathFile)
         {
             bool check = false;
@@ -128,5 +171,6 @@ namespace PDB_Excel_Data_Extractor
             }  
             return check;
         }
+        
     }
 }

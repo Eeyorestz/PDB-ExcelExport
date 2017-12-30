@@ -44,6 +44,8 @@ namespace PDB_Excel_Data_Extractor
         private double StudentskiHonorary = 0;
         private double StudentskiIncome = 0;
 
+        private List<DataTable> StartingBalances = new List<DataTable>();
+
         readonly string  expenseFile = AssemblyDirectory + @"\Zimnina\_Лютеница.xlsx";
         public void SeedingSharedData(int year, int month)
         {
@@ -57,7 +59,7 @@ namespace PDB_Excel_Data_Extractor
         public void summary(int year, int month, int day)
         {
              FolderPopulation folders = new FolderPopulation();
-            // folders.ExtractDataToArchive(year, month, day);
+             folders.ExtractDataToArchive(year, month, day);
              PopulatingForInstructors(year, month, day);
         }
 
@@ -74,11 +76,12 @@ namespace PDB_Excel_Data_Extractor
                 for (int p = 0; p < namesOfStudios.Length; p++)
                 {
                     sheetInfo = reader.ExcelToDataTable("Sheet1", namesOfStudios[p]);
-                  
+                    
                     ColumnIndexGetterInstructorFile(sheetInfo);
                   
                     string studioName = Path.GetFileName(namesOfStudios[p]);
                     studioName = studioName.Substring(0, studioName.Length - 5);
+                    StartingBalances.Add(LowestOpeningBalance(sheetInfo, studioName));
                     if (studioName.Equals("Студентски"))
                     {
                         reader.ExportToExcel(IncomeDataTable(sheetInfo, Instructors()[g], studioName, ТrueExpense(sheetInfo)), AssemblyDirectory + @"\Zimnina\_Компот-Студентски.xlsx", "Приход");
@@ -103,8 +106,14 @@ namespace PDB_Excel_Data_Extractor
                         }
                     }
                     CardValidityPupulation(sheetInfo);
-                  
+                   
+
+
     }
+            }
+            if (MessageBox.Show("Завършена операция",
+                    "Confirmation", MessageBoxButton.OK) == MessageBoxResult.OK)
+            {
             }
         }
         private DataTable IncomeDataTable(DataTable sheetInfo,string instrctorName, string studioName ,List<int> trueExpenses)
@@ -211,8 +220,6 @@ namespace PDB_Excel_Data_Extractor
 
             return table;
         }
-
-        
 
         private void CardValidityPupulation(DataTable sheetInfo)
         {
