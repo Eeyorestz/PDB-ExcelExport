@@ -43,7 +43,11 @@ namespace PDB_Excel_Data_Extractor
                 {
                     File.Copy(s, destFile, true);
                 }
- 
+                else
+                {
+                    fileName = s.Substring(0, s.Length - 5)+"-EMPTY.xlsx";
+                    File.Move(s, fileName);
+                }
             }
         }
         internal static string DateOfExportedFile(int year, int month, int day)
@@ -56,7 +60,7 @@ namespace PDB_Excel_Data_Extractor
             string[] files = Directory.GetFiles(ArchiveDayDirectory(year, monthName, day, instructorName));
             return files;
         }
-        internal static double delimterConvertor(string number)
+        internal static double DelimterConvertor(string number)
         {
             if (number.Contains("."))
             {
@@ -105,10 +109,18 @@ namespace PDB_Excel_Data_Extractor
             bool check = false;
             ExcelReader excel = new ExcelReader();
             DataTable table = excel.ExcelToDataTable("Sheet1",pathFile);
+            int nameAndFamilyIndex = 0;
+            for (int t = 0; t < table.Columns.Count; t++)
+            {
+                if (table.Rows[1][t].ToString().Contains("име и фамилия"))
+                {
+                    nameAndFamilyIndex = t;
+                    break;
+                }
+            }
             for (int i = 1; i < table.Rows.Count; i++)
             {
-                string ggg = table.Rows[i][3].ToString();
-                if (!table.Rows[i][3].ToString().Equals("")&& !table.Rows[i][3].ToString().Contains("име и фамилия"))
+                if (!table.Rows[i][nameAndFamilyIndex].ToString().Equals("")&& !table.Rows[i][nameAndFamilyIndex].ToString().Contains("име и фамилия"))
                 {
                     check = true;
                     break;

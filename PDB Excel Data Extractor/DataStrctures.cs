@@ -51,12 +51,5 @@ namespace PDB_Excel_Data_Extractor
             table.Columns.Add("Secondum", typeof(int));        
             return table;
         }
-        public DataTable IndexGetterStructure()
-        {
-            DataTable table = new DataTable();
-            table.Columns.Add("Type", typeof(string));
-            table.Columns.Add("Index", typeof(int));
-            return table;
-        }
     }
 }
