@@ -1,13 +1,22 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Data;
+using System.Linq;
 
 
 namespace PDB_Excel_Data_Extractor
 {
     public class Common
     {
+        public static int CardExpirationValidation(string firstDate, string secondDate)
+        {
+            var firstTime = Convert.ToDateTime(firstDate);
+            var secondTime = Convert.ToDateTime(secondDate);
+            int result = DateTime.Compare(firstTime, secondTime);
+            return result;
+        }
         internal static string[] Instructors()
         {
             string[] lines = File.ReadAllLines(AssemblyDirectory+@"\Templates\Instructors.txt");
@@ -120,31 +129,65 @@ namespace PDB_Excel_Data_Extractor
                
                 balanceString = table.Rows[range + 4][0].ToString().Substring(3);
                  if (!balanceString.Equals(""))
-                {
-                    balance = Convert.ToDouble(balanceString);
+                 {
+                     balance = DelimterConvertor(balanceString);
                     time = table.Rows[range][0].ToString().Substring(0, 5);
                     tableToReturn.Rows.Add(time, balance, studio);
                 }
             }
             return tableToReturn;
         }
-        public static void CardExpirationValidation(string cardValidityTo)
+
+        #region BalanceMethods
+        internal static int DateTimeComparer(string timePeriodOne, string timePeriodTwo)
         {
-
-            var validity = Convert.ToDateTime("21.12.2017");
-            var todayDate = Convert.ToDateTime("22.12.2017");
-            int ggg = DateTime.Compare(validity, todayDate);
-
-            if (DateTime.Compare(validity, todayDate) < 0)
-            {
-                Console.WriteLine("Red");
-            }
-            else if (DateTime.Compare(validity, todayDate) == 0)
-            {
-                Console.WriteLine("Yellow");
-
-            }
+            int result = DateTime.Compare(Convert.ToDateTime(timePeriodOne), Convert.ToDateTime(timePeriodTwo));
+            return result;
         }
+        internal static double LowestAmmountPopulating(string studioName, List<DataTable> StartingBalances)
+        {
+            double lowestBalance = 0;
+            var studentsTownList = StartingBalances.FindAll(x => x.Rows[0]["Studio"].ToString().Equals(studioName)).ToList();
+
+            double startingBalance = 0;
+            for (int i = 0; i < studentsTownList.Count - 1; i++)
+            {
+                var tempTime = studentsTownList[i].Rows[0]["Time"].ToString();
+                var tempBalance = DelimterConvertor(studentsTownList[i].Rows[0]["Balance"].ToString());
+                var time = studentsTownList[i + 1].Rows[0]["Time"].ToString();
+                var balance = DelimterConvertor(studentsTownList[i + 1].Rows[0]["Balance"].ToString());
+                if (lowestBalance == 0)
+                {
+                    lowestBalance = tempBalance;
+                }
+                if (DateTimeComparer(tempTime, time) < 0 && tempBalance < balance && lowestBalance >= tempBalance)
+                {
+                    lowestBalance = tempBalance;
+                }
+            }
+            return lowestBalance;
+        }
+
+        internal static int StartingRowForExport(DataTable table, string date)
+        {
+            int row = 0;
+            for (int i = 2; i < table.Rows.Count; i++)
+            {
+                var dateTime = Convert.ToDateTime(date).ToString();
+                if (DateTimeComparer(table.Rows[i][0].ToString(), dateTime) ==0)
+                {
+                    row = i;
+                    break;
+                }
+            }
+            return row;
+        }
+
+        #endregion
+
+
+
+
 
 
         private static bool FilledFileCheck(string pathFile)

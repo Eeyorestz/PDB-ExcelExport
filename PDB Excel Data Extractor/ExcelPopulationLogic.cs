@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.IO;
-
+using System.Linq;
 using System.Windows;
 
 
@@ -59,7 +59,7 @@ namespace PDB_Excel_Data_Extractor
         public void summary(int year, int month, int day)
         {
              FolderPopulation folders = new FolderPopulation();
-             folders.ExtractDataToArchive(year, month, day);
+             //folders.ExtractDataToArchive(year, month, day);
              PopulatingForInstructors(year, month, day);
         }
 
@@ -82,35 +82,35 @@ namespace PDB_Excel_Data_Extractor
                     string studioName = Path.GetFileName(namesOfStudios[p]);
                     studioName = studioName.Substring(0, studioName.Length - 5);
                     StartingBalances.Add(LowestOpeningBalance(sheetInfo, studioName));
-                    if (studioName.Equals("Студентски"))
-                    {
-                        reader.ExportToExcel(IncomeDataTable(sheetInfo, Instructors()[g], studioName, ТrueExpense(sheetInfo)), AssemblyDirectory + @"\Zimnina\_Компот-Студентски.xlsx", "Приход");
-                        reader.ExportToExcel(ExpenseDataTable(sheetInfo, Instructors()[g], studioName, year, month, day), AssemblyDirectory+@"\Zimnina\_Компот-Студентски.xlsx", "Разход");
-                    }
-                    else
-                    {
-                        reader.ExportToExcel(IncomeDataTable(sheetInfo, Instructors()[g], studioName, ТrueExpense(sheetInfo)), AssemblyDirectory + @"\Zimnina\_Компот-ЦЛ.xlsx", "Приход");
-                        reader.ExportToExcel(ExpenseDataTable(sheetInfo, Instructors()[g], studioName, year, month, day), AssemblyDirectory+@"\Zimnina\_Компот-ЦЛ.xlsx", "Разход");                   
-                    }
-
-                    List<DataTable> data = CardValidityDataTable(sheetInfo, ТrueExpense(sheetInfo), year, month, day);
-                    for (int w = 0; w < data.Count; w++)
-                    {
-                        if (data[w].Rows[0]["WayOfPaying"].ToString().Equals("50%"))
-                        {
-                            reader.ExportToExcel(data[w], expenseFile, "Справка карти", "Red");
-                        }
-                        else
-                        {
-                            reader.ExportToExcel(data[w], expenseFile, "Справка карти");
-                        }
-                    }
-                    CardValidityPupulation(sheetInfo);
                    
+                    //if (studioName.Equals("Студентски"))
+                    //{
+                    //    reader.ExportToExcel(IncomeDataTable(sheetInfo, Instructors()[g], studioName, ТrueExpense(sheetInfo)), AssemblyDirectory + @"\Zimnina\_Компот-Студентски.xlsx", "Приход");
+                    //    reader.ExportToExcel(ExpenseDataTable(sheetInfo, Instructors()[g], studioName, year, month, day), AssemblyDirectory+@"\Zimnina\_Компот-Студентски.xlsx", "Разход");
+                    //}
+                    //else
+                    //{
+                    //    reader.ExportToExcel(IncomeDataTable(sheetInfo, Instructors()[g], studioName, ТrueExpense(sheetInfo)), AssemblyDirectory + @"\Zimnina\_Компот-ЦЛ.xlsx", "Приход");
+                    //    reader.ExportToExcel(ExpenseDataTable(sheetInfo, Instructors()[g], studioName, year, month, day), AssemblyDirectory+@"\Zimnina\_Компот-ЦЛ.xlsx", "Разход");                   
+                    //}
 
+                    //List<DataTable> data = CardValidityDataTable(sheetInfo, ТrueExpense(sheetInfo), year, month, day);
+                    //for (int w = 0; w < data.Count; w++)
+                    //{
+                    //    if (data[w].Rows[0]["WayOfPaying"].ToString().Equals("50%"))
+                    //    {
+                    //        reader.ExportToExcel(data[w], expenseFile, "Справка карти", "Red");
+                    //    }
+                    //    else
+                    //    {
+                    //        reader.ExportToExcel(data[w], expenseFile, "Справка карти");
+                    //    }
+                    //}
+                    //CardValidityPupulation(sheetInfo);         
+                }
 
-    }
             }
+            AvailabilityDataTable(sheetInfo);
             if (MessageBox.Show("Завършена операция",
                     "Confirmation", MessageBoxButton.OK) == MessageBoxResult.OK)
             {
@@ -217,7 +217,25 @@ namespace PDB_Excel_Data_Extractor
         {
             DataStrctures structure = new DataStrctures();
             DataTable table = structure.ExpenseDataTableStructure();
+            ExcelReader reader = new ExcelReader();
+            DataTable BalanceSheet = reader.ExcelToDataTable("Наличност", AssemblyDirectory + @"\Zimnina\_Компот-ЦЛ.xlsx" );
+            int startingRow =   StartingRowForExport(BalanceSheet, date);
 
+            table.Rows.Add("Test", date);
+            reader.ExportToExcel(table,  AssemblyDirectory + @"\Zimnina\Testing.xlsx", "Sheet1", numberOfLastRow: startingRow);
+            reader.ExportToExcel(table,  AssemblyDirectory + @"\Zimnina\_Компот-ЦЛ.xlsx", "Наличност", numberOfLastRow: startingRow);
+            for (int i = 0; i < StudioNames().Count; i++)
+            {
+                var lowestBalance = LowestAmmountPopulating(StudioNames()[i], StartingBalances);
+                if (StudioNames()[i].Equals("Студентски"))
+                {
+
+                }
+                else
+                {
+
+                }
+            }
             return table;
         }
 
@@ -269,6 +287,15 @@ namespace PDB_Excel_Data_Extractor
                     list.Add(i);
                 }
             }
+            return list;
+        }
+
+        private List<string> StudioNames()
+        {
+            List<string> list = new List<string>();
+            list.Add("Студентски");
+            list.Add("Лозенец");
+            list.Add("Център");
             return list;
         }
 

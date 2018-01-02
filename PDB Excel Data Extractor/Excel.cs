@@ -43,21 +43,25 @@ namespace PDB_Excel_Data_Extractor
             return resultTable;
         }
 
-        public void ExportToExcel(DataTable resultTable, string fileLocation, string sheetName, string color = "")
+        public void ExportToExcel(DataTable resultTable, string fileLocation, string sheetName, string color = "", int numberOfLastRow = 0)
         {
             XLWorkbook Workbook = new XLWorkbook(fileLocation);
             IXLWorksheet Worksheet = Workbook.Worksheet(sheetName);
 
             //Gets the last used row
-            int NumberOfLastRow = Worksheet.LastRowUsed().RowNumber();
+            if (numberOfLastRow == 0)
+            {
+                numberOfLastRow  = Worksheet.LastRowUsed().RowNumber();
+            }
+           
           
             //Defines the starting cell for appeding  (Row , Column)    
-            IXLCell CellForNewData = Worksheet.Cell(NumberOfLastRow + 1, 1);
+            IXLCell CellForNewData = Worksheet.Cell(numberOfLastRow + 1, 1);
             if (!color.Equals(""))
             {
                 for (int i = 0; i < resultTable.Rows.Count; i++)
                 {
-                    IXLRow RowForNewData = Worksheet.Row(NumberOfLastRow + 1 + i);
+                    IXLRow RowForNewData = Worksheet.Row(numberOfLastRow + 1 + i);
                     RowForNewData.Style.Font.FontColor = XLColor.Red;
                 }
             }
