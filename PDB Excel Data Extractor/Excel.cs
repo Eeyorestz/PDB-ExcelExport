@@ -43,7 +43,7 @@ namespace PDB_Excel_Data_Extractor
             return resultTable;
         }
 
-        public void ExportToExcel(DataTable resultTable, string fileLocation, string sheetName, string color = "", int numberOfLastRow = 0)
+        public void ExportToExcel(DataTable resultTable, string fileLocation, string sheetName, string color = "", int numberOfLastRow = 0, int startingCellIndex = 1)
         {
             XLWorkbook Workbook = new XLWorkbook(fileLocation);
             IXLWorksheet Worksheet = Workbook.Worksheet(sheetName);
@@ -56,7 +56,7 @@ namespace PDB_Excel_Data_Extractor
            
           
             //Defines the starting cell for appeding  (Row , Column)    
-            IXLCell CellForNewData = Worksheet.Cell(numberOfLastRow + 1, 1);
+            IXLCell CellForNewData = Worksheet.Cell(numberOfLastRow + 1, startingCellIndex);
             if (!color.Equals(""))
             {
                 for (int i = 0; i < resultTable.Rows.Count; i++)

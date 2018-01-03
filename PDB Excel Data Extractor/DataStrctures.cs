@@ -1,4 +1,5 @@
 ﻿
+using System;
 using System.Data;
 
 namespace PDB_Excel_Data_Extractor
@@ -40,7 +41,7 @@ namespace PDB_Excel_Data_Extractor
             table.Columns.Add("ActualAmmount", typeof(int));
             return table;
         }
-        public DataTable AvailabilityTableStructure()
+        public DataTable AvailabilityTableStructure(string date, double lowestBalance, double income, double honorary, string clarifications, double cashRegisterValue )
         {
             DataTable table = new DataTable();
             table.Columns.Add("Date", typeof(string));
@@ -48,7 +49,13 @@ namespace PDB_Excel_Data_Extractor
             table.Columns.Add("Sum", typeof(double));
             table.Columns.Add("Clarifications", typeof(string));
             table.Columns.Add("SecondTypeOfBalance", typeof(string));
-            table.Columns.Add("Secondum", typeof(int));        
+            table.Columns.Add("Secondum", typeof(double));
+         
+            table.Rows.Add(Convert.ToDateTime(date).ToString().Substring(0,12), "НС", lowestBalance, clarifications, "НС", lowestBalance);
+            table.Rows.Add(Convert.ToDateTime(date).ToString().Substring(0, 12), "Приход", income, clarifications, "Оборот ФУ", cashRegisterValue);
+            table.Rows.Add(Convert.ToDateTime(date).ToString().Substring(0, 12), "Разход", honorary, clarifications, "Изгеглени", 0);
+            table.Rows.Add(Convert.ToDateTime(date).ToString().Substring(0, 12), "КС", (lowestBalance + income) - honorary, clarifications, "КС");
+
             return table;
         }
         public DataTable StartingBalanceTableStructure()
@@ -56,6 +63,7 @@ namespace PDB_Excel_Data_Extractor
             DataTable table = new DataTable();
             table.Columns.Add("Time", typeof(string));
             table.Columns.Add("Balance", typeof(double));
+            table.Columns.Add("CashRegister", typeof(double));
             table.Columns.Add("Studio", typeof(string));
             return table;
         }

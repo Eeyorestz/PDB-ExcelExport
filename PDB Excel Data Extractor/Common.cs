@@ -114,57 +114,69 @@ namespace PDB_Excel_Data_Extractor
             }
         }
 
+
+
+        #region BalanceMethods
         internal static DataTable LowestOpeningBalance(DataTable table, string studio)
         {
             double balance = 0;
+            double casRegisterBalance = 0;
             DataStrctures tables = new DataStrctures();
             DataTable tableToReturn = tables.StartingBalanceTableStructure();
             IndexGetters indexes = new IndexGetters();
             var indexOfRanges = indexes.ListOfAllRanges(table);
             var balanceString = "";
+            var cashRegisterString = "";
             var time = "";
             for (int i = 0; i < indexOfRanges.Count; i++)
             {
                 int range = indexOfRanges[i];
-               
+              
                 balanceString = table.Rows[range + 4][0].ToString().Substring(3);
-                 if (!balanceString.Equals(""))
-                 {
-                     balance = DelimterConvertor(balanceString);
+                cashRegisterString = table.Rows[range + 6][0].ToString().Substring(6);
+                if (!balanceString.Equals(""))
+                {
+                    balance = DelimterConvertor(balanceString);
+                    casRegisterBalance = DelimterConvertor(cashRegisterString);
                     time = table.Rows[range][0].ToString().Substring(0, 5);
-                    tableToReturn.Rows.Add(time, balance, studio);
+                    tableToReturn.Rows.Add(time, balance, casRegisterBalance, studio);
                 }
             }
             return tableToReturn;
         }
-
-        #region BalanceMethods
         internal static int DateTimeComparer(string timePeriodOne, string timePeriodTwo)
         {
             int result = DateTime.Compare(Convert.ToDateTime(timePeriodOne), Convert.ToDateTime(timePeriodTwo));
             return result;
         }
-        internal static double LowestAmmountPopulating(string studioName, List<DataTable> StartingBalances)
+        internal static double LowestAmmountPopulating(string studioName, List<DataTable> StartingBalances, string columnName)
         {
             double lowestBalance = 0;
             var studentsTownList = StartingBalances.FindAll(x => x.Rows[0]["Studio"].ToString().Equals(studioName)).ToList();
-
-            double startingBalance = 0;
-            for (int i = 0; i < studentsTownList.Count - 1; i++)
+            if (studentsTownList.Count == 1)
             {
-                var tempTime = studentsTownList[i].Rows[0]["Time"].ToString();
-                var tempBalance = DelimterConvertor(studentsTownList[i].Rows[0]["Balance"].ToString());
-                var time = studentsTownList[i + 1].Rows[0]["Time"].ToString();
-                var balance = DelimterConvertor(studentsTownList[i + 1].Rows[0]["Balance"].ToString());
-                if (lowestBalance == 0)
+                var balance = DelimterConvertor(studentsTownList[0].Rows[0][columnName].ToString());
+                    lowestBalance = balance;
+            }
+            else
+            {
+                for (int i = 0; i < studentsTownList.Count - 1; i++)
                 {
-                    lowestBalance = tempBalance;
-                }
-                if (DateTimeComparer(tempTime, time) < 0 && tempBalance < balance && lowestBalance >= tempBalance)
-                {
-                    lowestBalance = tempBalance;
+                    var tempTime = studentsTownList[i].Rows[0]["Time"].ToString();
+                    var balance = DelimterConvertor(studentsTownList[i].Rows[0][columnName].ToString());
+                    var time = studentsTownList[i + 1].Rows[0]["Time"].ToString();
+                    if (lowestBalance == 0)
+                    {
+                        lowestBalance = balance;
+                    }
+                    if (DateTimeComparer(tempTime, time) < 0 && lowestBalance >= balance)
+                    {
+                        lowestBalance = balance;
+                    }
                 }
             }
+
+            
             return lowestBalance;
         }
 
@@ -182,6 +194,7 @@ namespace PDB_Excel_Data_Extractor
             }
             return row;
         }
+      
 
         #endregion
 
