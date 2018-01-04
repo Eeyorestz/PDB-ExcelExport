@@ -58,8 +58,6 @@ namespace PDB_Excel_Data_Extractor
             DateTime dt = new DateTime(year, month, day);
             string dayOfTheWeek = dt.DayOfWeek.ToString();
             return dayOfTheWeek;
-        }
-
-        
+        }    
     }
 }
