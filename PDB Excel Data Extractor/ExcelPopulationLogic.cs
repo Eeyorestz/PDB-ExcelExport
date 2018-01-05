@@ -55,6 +55,8 @@ namespace PDB_Excel_Data_Extractor
             {
                 folders.PopulateMontlyFiles(year, month);
             }
+            MessageBox.Show("Завършена операция",
+               "Confirmation", MessageBoxButton.OK);
         }
         public void summary(int year, int month, int day)
         {
@@ -114,8 +116,8 @@ namespace PDB_Excel_Data_Extractor
 
             }
             AvailabilityDataTable(sheetInfo);
-            if (MessageBox.Show("Завършена операция",
-                    "Confirmation", MessageBoxButton.OK) == MessageBoxResult.OK)
+            MessageBox.Show("Завършена операция",
+                "Confirmation", MessageBoxButton.OK);
             {
             }
         }

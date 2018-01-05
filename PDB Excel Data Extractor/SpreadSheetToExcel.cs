@@ -2,11 +2,9 @@
 using System.Collections.Generic;
 using System.Data;
 using System.IO;
-
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
-
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Services;
 using Google.Apis.Sheets.v4;
@@ -43,8 +41,7 @@ namespace PDB_Excel_Data_Extractor
                     excel.ExportToExcel(table, files[i].Substring(0, files[i].Length - 7), "Sheet1", numberOfLastRow: 3,
                         startingCellIndex: 2);
                 }
-            }
-           
+            }  
         }
 
        
