@@ -21,8 +21,6 @@ namespace PDB_Excel_Data_Extractor
         private int moneyIndex ;
         private int receiptIndex ;
         private int additionalInfoIndex;
-
-
         #endregion
         #region CardInfoIndexes
         private int poleDanceIndex;
@@ -36,16 +34,16 @@ namespace PDB_Excel_Data_Extractor
         private int handStandIndex;
         private int aerialYogaKids;
         #endregion
-        private string date = "";
+        #region HonoraryIncomeValues
         private double CenterHonorary = 0;
         private double CenteryIncome = 0;
         private double LozenecHonorary = 0;
         private double LozenecIncome = 0;
         private double StudentskiHonorary = 0;
         private double StudentskiIncome = 0;
-
+        #endregion
+        private string date = "";
         private List<DataTable> StartingBalances = new List<DataTable>();
-
         readonly string  expenseFile = AssemblyDirectory + @"\Zimnina\_Лютеница.xlsx";
         public void SeedingSharedData(int year, int month)
         {
@@ -69,8 +67,7 @@ namespace PDB_Excel_Data_Extractor
         {
             ExcelReader reader = new ExcelReader();
             DataTable sheetInfo = null;
-           
-         
+              
             date = DateOfExportedFile(year, month, day);
         
             for (int g = 0; g < Instructors().Length; g++)

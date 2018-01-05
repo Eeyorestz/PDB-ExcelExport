@@ -45,7 +45,7 @@ namespace PDB_Excel_Data_Extractor
 
             foreach (string s in files)
             {
-                if (!s.Contains("gsheet"))
+                if (!s.Contains("gsheet") && !s.Contains("ini"))
                 {
                     fileName = Path.GetFileName(s);
                     destFile = Path.Combine(destinationPath, fileName);
