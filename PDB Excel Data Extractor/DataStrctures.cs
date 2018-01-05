@@ -67,5 +67,17 @@ namespace PDB_Excel_Data_Extractor
             table.Columns.Add("Studio", typeof(string));
             return table;
         }
+        public DataTable BananasDataTableStructure()
+        {
+            DataTable table = new DataTable();
+            table.Columns.Add("NumberOfCard", typeof(string));
+            table.Columns.Add("TypeOfCard", typeof(string));
+            table.Columns.Add("FirstAndFamilyName", typeof(string));
+            table.Columns.Add("Honorary", typeof(string));
+            table.Columns.Add("Money", typeof(string));
+            table.Columns.Add("Recepiet", typeof(string));
+            table.Columns.Add("WayOfPaying", typeof(string));           
+            return table;
+        }
     }
 }

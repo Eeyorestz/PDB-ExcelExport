@@ -10,14 +10,18 @@ namespace PDB_Excel_Data_Extractor
 {
     public class FolderPopulation : Common
     {
+       
         public  void ExtractDataToArchive(int year, int month, int day)
         {
+            SpreadSheetToExcel toExcel = new SpreadSheetToExcel();
+            DataStrctures structure = new DataStrctures();
             for (int i = 0; i < Instructors().Length; i++)
             {
                 string dayDirectory = ArchiveDayDirectory(year, MonthName(month), day, Instructors()[i]);
                 Directory.CreateDirectory(dayDirectory);
                 string sourcePath = InstructorsDirectory(year, Instructors()[i]) + @"\" +
                              day;
+                toExcel.Transformer(sourcePath, structure.BananasDataTableStructure());
                 CopyPasteFiles(sourcePath, dayDirectory);
             }
         }

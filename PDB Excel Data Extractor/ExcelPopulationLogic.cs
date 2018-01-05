@@ -59,7 +59,7 @@ namespace PDB_Excel_Data_Extractor
         public void summary(int year, int month, int day)
         {
              FolderPopulation folders = new FolderPopulation();
-             //folders.ExtractDataToArchive(year, month, day);
+             folders.ExtractDataToArchive(year, month, day);
              PopulatingForInstructors(year, month, day);
         }
 
@@ -67,6 +67,7 @@ namespace PDB_Excel_Data_Extractor
         {
             ExcelReader reader = new ExcelReader();
             DataTable sheetInfo = null;
+           
          
             date = DateOfExportedFile(year, month, day);
         
@@ -75,6 +76,7 @@ namespace PDB_Excel_Data_Extractor
                 string[] namesOfStudios = GetFileNames(year, MonthName(month), day, Instructors()[g]);
                 for (int p = 0; p < namesOfStudios.Length; p++)
                 {
+                   
                     sheetInfo = reader.ExcelToDataTable("Sheet1", namesOfStudios[p]);
                     
                     ColumnIndexGetterInstructorFile(sheetInfo);

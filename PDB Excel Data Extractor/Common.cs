@@ -45,18 +45,22 @@ namespace PDB_Excel_Data_Extractor
 
             foreach (string s in files)
             {
+                if (!s.Contains("gsheet"))
+                {
+                    fileName = Path.GetFileName(s);
+                    destFile = Path.Combine(destinationPath, fileName);
+                    if (FilledFileCheck(s) || emptyCheck)
+                    {
+                        File.Copy(s, destFile, true);
+                    }
+                    else
+                    {
+                        fileName = s.Substring(0, s.Length - 5) + "-EMPTY.xlsx";
+                        File.Move(s, fileName);
+                    }
+                }
                 // Use static Path methods to extract only the file name from the path.
-                fileName = Path.GetFileName(s);
-                destFile = Path.Combine(destinationPath, fileName);
-                if (FilledFileCheck(s)|| emptyCheck)
-                {
-                    File.Copy(s, destFile, true);
-                }
-                else
-                {
-                    fileName = s.Substring(0, s.Length - 5)+"-EMPTY.xlsx";
-                    File.Move(s, fileName);
-                }
+               
             }
         }
         internal static string DateOfExportedFile(int year, int month, int day)
