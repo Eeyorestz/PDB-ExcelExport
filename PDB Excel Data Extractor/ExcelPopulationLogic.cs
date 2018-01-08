@@ -49,14 +49,22 @@ namespace PDB_Excel_Data_Extractor
         readonly string  expenseFile = AssemblyDirectory + @"\Zimnina\_Лютеница.xlsx";
         public void SeedingSharedData(int year, int month)
         {
-            FolderPopulation folders = new FolderPopulation();            
-            if (MessageBox.Show("Искате ли да продължите ?",
-                "Confirmation", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
+            try
             {
-                folders.PopulateMontlyFiles(year, month);
+                FolderPopulation folders = new FolderPopulation();
+                if (MessageBox.Show("Искате ли да продължите ?",
+                    "Confirmation", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
+                {
+                    folders.PopulateMontlyFiles(year, month);
+                }
+                MessageBox.Show("Завършена операция",
+                   "Confirmation", MessageBoxButton.OK);
             }
-            MessageBox.Show("Завършена операция",
-               "Confirmation", MessageBoxButton.OK);
+            catch (Exception e)
+            {
+                Logging error = new Logging();
+                error.LogError(e);
+            }    
         }
         public void summary(int year, int month, int day)
         {
@@ -67,59 +75,65 @@ namespace PDB_Excel_Data_Extractor
 
         private void PopulatingForInstructors(int year, int month, int day)
         {
-            ExcelReader reader = new ExcelReader();
-            DataTable sheetInfo = null;
-           
-         
-            date = DateOfExportedFile(year, month, day);
-        
-            for (int g = 0; g < Instructors().Length; g++)
+            try
             {
-                string[] namesOfStudios = GetFileNames(year, MonthName(month), day, Instructors()[g]);
-                for (int p = 0; p < namesOfStudios.Length; p++)
+                ExcelReader reader = new ExcelReader();
+                DataTable sheetInfo = null;
+
+
+                date = DateOfExportedFile(year, month, day);
+
+                for (int g = 0; g < Instructors().Length; g++)
                 {
-                   
-                    sheetInfo = reader.ExcelToDataTable("Sheet1", namesOfStudios[p]);
-                    
-                    ColumnIndexGetterInstructorFile(sheetInfo);
-                  
-                    string studioName = Path.GetFileName(namesOfStudios[p]);
-                    studioName = studioName.Substring(0, studioName.Length - 5);
-                   
+                    string[] namesOfStudios = GetFileNames(year, MonthName(month), day, Instructors()[g]);
+                    for (int p = 0; p < namesOfStudios.Length; p++)
+                    {
 
-                    if (studioName.Equals("Студентски"))
-                    {
-                        reader.ExportToExcel(IncomeDataTable(sheetInfo, Instructors()[g], studioName, ТrueExpense(sheetInfo)), AssemblyDirectory + @"\Zimnina\_Компот-Студентски.xlsx", "Приход");
-                        reader.ExportToExcel(ExpenseDataTable(sheetInfo, Instructors()[g], studioName, year, month, day), AssemblyDirectory + @"\Zimnina\_Компот-Студентски.xlsx", "Разход");
-                    }
-                    else
-                    {
-                        reader.ExportToExcel(IncomeDataTable(sheetInfo, Instructors()[g], studioName, ТrueExpense(sheetInfo)), AssemblyDirectory + @"\Zimnina\_Компот-ЦЛ.xlsx", "Приход");
-                        reader.ExportToExcel(ExpenseDataTable(sheetInfo, Instructors()[g], studioName, year, month, day), AssemblyDirectory + @"\Zimnina\_Компот-ЦЛ.xlsx", "Разход");
-                    }
+                        sheetInfo = reader.ExcelToDataTable("Sheet1", namesOfStudios[p]);
 
-                    List<DataTable> data = CardValidityDataTable(sheetInfo, ТrueExpense(sheetInfo), year, month, day);
-                    for (int w = 0; w < data.Count; w++)
-                    {
-                        if (data[w].Rows[0]["WayOfPaying"].ToString().Equals("50%"))
+                        ColumnIndexGetterInstructorFile(sheetInfo);
+
+                        string studioName = Path.GetFileName(namesOfStudios[p]);
+                        studioName = studioName.Substring(0, studioName.Length - 5);
+
+
+                        if (studioName.Equals("Студентски"))
                         {
-                            reader.ExportToExcel(data[w], expenseFile, "Справка карти", "Red");
+                            reader.ExportToExcel(IncomeDataTable(sheetInfo, Instructors()[g], studioName, ТrueExpense(sheetInfo)), AssemblyDirectory + @"\Zimnina\_Компот-Студентски.xlsx", "Приход");
+                            reader.ExportToExcel(ExpenseDataTable(sheetInfo, Instructors()[g], studioName, year, month, day), AssemblyDirectory + @"\Zimnina\_Компот-Студентски.xlsx", "Разход");
                         }
                         else
                         {
-                            reader.ExportToExcel(data[w], expenseFile, "Справка карти");
+                            reader.ExportToExcel(IncomeDataTable(sheetInfo, Instructors()[g], studioName, ТrueExpense(sheetInfo)), AssemblyDirectory + @"\Zimnina\_Компот-ЦЛ.xlsx", "Приход");
+                            reader.ExportToExcel(ExpenseDataTable(sheetInfo, Instructors()[g], studioName, year, month, day), AssemblyDirectory + @"\Zimnina\_Компот-ЦЛ.xlsx", "Разход");
                         }
-                    }
-                    StartingBalances.Add(LowestOpeningBalance(sheetInfo, studioName));
-                    //CardValidityPupulation(sheetInfo);
-                }
 
+                        List<DataTable> data = CardValidityDataTable(sheetInfo, ТrueExpense(sheetInfo), year, month, day);
+                        for (int w = 0; w < data.Count; w++)
+                        {
+                            if (data[w].Rows[0]["WayOfPaying"].ToString().Equals("50%"))
+                            {
+                                reader.ExportToExcel(data[w], expenseFile, "Справка карти", "Red");
+                            }
+                            else
+                            {
+                                reader.ExportToExcel(data[w], expenseFile, "Справка карти");
+                            }
+                        }
+                        StartingBalances.Add(LowestOpeningBalance(sheetInfo, studioName));
+                        CardValidityPupulation(sheetInfo, Instructors()[g], studioName);
+                    }
+                }
+                AvailabilityDataTable(sheetInfo);
+                MessageBox.Show("Завършена операция",
+                    "Confirmation", MessageBoxButton.OK);
             }
-            AvailabilityDataTable(sheetInfo);
-            MessageBox.Show("Завършена операция",
-                "Confirmation", MessageBoxButton.OK);
+            catch (Exception e)
             {
+               Logging error = new Logging();
+                error.LogError(e);
             }
+           
         }
         private DataTable IncomeDataTable(DataTable sheetInfo,string instrctorName, string studioName ,List<int> trueExpenses)
         {
@@ -256,8 +270,7 @@ namespace PDB_Excel_Data_Extractor
           
         }
 
-    
-        private void CardValidityPupulation(DataTable sheetInfo)
+        private void CardValidityPupulation(DataTable sheetInfo, string insctructor, string studio)
         {
             IndexGetters indexes = new IndexGetters();
             ExcelReader excel = new ExcelReader();
@@ -280,6 +293,7 @@ namespace PDB_Excel_Data_Extractor
                             workoutType = workouts[j];
                             var cardRowNumber = indexes.RowOfCard(expenseInfo, cardName);
                             var cardColumnNumber = ColumnIndexGetterCardInfoFile(expenseInfo, workoutType);
+                            var ggg = expenseInfo.Rows[cardRowNumber][cardColumnNumber].ToString();
                             if (!expenseInfo.Rows[cardRowNumber][cardColumnNumber].ToString().Equals(""))
                             {
                                 ammount = int.Parse(expenseInfo.Rows[cardRowNumber][cardColumnNumber].ToString());
@@ -355,9 +369,10 @@ namespace PDB_Excel_Data_Extractor
             int returnIndex = 0;
             for (int i = 0; i < sheetInfo.Columns.Count; i++)
             {
-                if (sheetInfo.Rows[index.CardExpirationStartingRowIndex(sheetInfo)][i].ToString().ToLower().Equals(typeOfWorkout))
+                if (sheetInfo.Rows[index.CardExpirationStartingRowIndex(sheetInfo)][i].ToString().ToLower().Equals(typeOfWorkout.Trim().ToLower()))
                 {
                     returnIndex = i;
+                    break;
                 }
             }
             return returnIndex;

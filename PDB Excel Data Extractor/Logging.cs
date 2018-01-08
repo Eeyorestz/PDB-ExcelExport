@@ -7,11 +7,12 @@ using System.Threading.Tasks;
 
 namespace PDB_Excel_Data_Extractor
 {
-    class Logging
+    public class Logging : Common
     {
         public void LogError(Exception ex)
         {
-            string filePath = @"C:\Error.txt";
+           
+            string filePath = AssemblyDirectory+@"\Logs\Error.txt";
 
             using (StreamWriter writer = new StreamWriter(filePath, true))
             {
