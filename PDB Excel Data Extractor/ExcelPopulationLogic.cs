@@ -36,13 +36,18 @@ namespace PDB_Excel_Data_Extractor
         private int handStandIndex;
         private int aerialYogaKids;
         #endregion
-        private string date = "";
+        #region IncomeHonorarySums
+
         private double CenterHonorary = 0;
         private double CenteryIncome = 0;
         private double LozenecHonorary = 0;
         private double LozenecIncome = 0;
         private double StudentskiHonorary = 0;
         private double StudentskiIncome = 0;
+
+        #endregion
+        private string date = "";
+      
 
         private List<DataTable> StartingBalances = new List<DataTable>();
 
@@ -205,8 +210,7 @@ namespace PDB_Excel_Data_Extractor
         }
         private List<DataTable> CardValidityDataTable(DataTable sheetInfo, List<int> trueExpenses, int year, int month, int day)
         {
-            DataStrctures structure = new DataStrctures();
-           
+            DataStrctures structure = new DataStrctures();   
             List<DataTable> listOfTables = new List<DataTable>();
             MoneyData moneyData = new MoneyData();
            
@@ -218,10 +222,8 @@ namespace PDB_Excel_Data_Extractor
                 var cardName = sheetInfo.Rows[indexOfRow][nOfCardIndex].ToString();
                 var firstAndFamilyName = sheetInfo.Rows[indexOfRow][firstAndFamiliyNameIndex].ToString();
                 var wayOfPaying = moneyData.deferredPayment(money);
-
-                 var typeOfood = sheetInfo.Rows[indexOfRow][typeOfGoodIndex].ToString();
-                var ammountOfMoney = moneyData.Ammout(money,
-                   typeOfood);
+                var typeOfood = sheetInfo.Rows[indexOfRow][typeOfGoodIndex].ToString();
+                var ammountOfMoney = moneyData.Ammout(money, typeOfood);
                 var ValidityTo = moneyData.CardPeriodExpiration(year, month, day, ammountOfMoney);
                 if (!cardName.Equals("")|| typeOfood.Equals("ваучер"))
                 {
@@ -234,14 +236,11 @@ namespace PDB_Excel_Data_Extractor
 
         private void AvailabilityDataTable(DataTable sheetInfo)
         {
-            DataStrctures structure = new DataStrctures();
-          
+            DataStrctures structure = new DataStrctures();      
             ExcelReader reader = new ExcelReader();
             DataTable BalanceSheet = reader.ExcelToDataTable("Наличност", AssemblyDirectory + @"\Zimnina\_Компот-ЦЛ.xlsx" );
             int startingRow =   StartingRowForExport(BalanceSheet, date);
 
-         
-          
             for (int i = 0; i < StudioNames().Count; i++)
             {
                 var lowestBalance = LowestAmmountPopulating(StudioNames()[i], StartingBalances,"Balance");
@@ -267,7 +266,6 @@ namespace PDB_Excel_Data_Extractor
                     }
                 }
             }
-          
         }
 
         private void CardValidityPupulation(DataTable sheetInfo, string insctructor, string studio)
@@ -293,7 +291,6 @@ namespace PDB_Excel_Data_Extractor
                             workoutType = workouts[j];
                             var cardRowNumber = indexes.RowOfCard(expenseInfo, cardName);
                             var cardColumnNumber = ColumnIndexGetterCardInfoFile(expenseInfo, workoutType);
-                            var ggg = expenseInfo.Rows[cardRowNumber][cardColumnNumber].ToString();
                             if (!expenseInfo.Rows[cardRowNumber][cardColumnNumber].ToString().Equals(""))
                             {
                                 ammount = int.Parse(expenseInfo.Rows[cardRowNumber][cardColumnNumber].ToString());
@@ -321,7 +318,6 @@ namespace PDB_Excel_Data_Extractor
             }
             return list;
         }
-
         private List<string> StudioNames()
         {
             List<string> list = new List<string>();

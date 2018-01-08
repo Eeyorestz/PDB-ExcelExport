@@ -30,8 +30,6 @@ namespace PDB_Excel_Data_Extractor
             switch (givenMoney)
             {
                 case "50":
-                    amountOfMoney = 72;
-                    break;
                 case "60":
                     amountOfMoney = 72;
                     break;
@@ -152,18 +150,6 @@ namespace PDB_Excel_Data_Extractor
             }
             return typeOfPayment;
         }
-
-        public int RemainingSum()
-        {
-            int remainingSum = 0;
-            return remainingSum;
-        }
-
-        //private List<int> GetColumIndex()
-        //{
-        //}
-
-
 
     }
 }

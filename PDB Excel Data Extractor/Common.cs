@@ -55,12 +55,13 @@ namespace PDB_Excel_Data_Extractor
                     }
                     else
                     {
-                        fileName = s.Substring(0, s.Length - 5) + "-EMPTY.xlsx";
-                        File.Move(s, fileName);
+                        if (!fileName.Contains("EMPTY"))
+                        {
+                            fileName = s.Substring(0, s.Length - 5) + "-EMPTY.xlsx";
+                            File.Move(s, fileName);
+                        }
                     }
                 }
-                // Use static Path methods to extract only the file name from the path.
-               
             }
         }
         internal static string DateOfExportedFile(int year, int month, int day)
@@ -117,8 +118,6 @@ namespace PDB_Excel_Data_Extractor
                 return Path.GetDirectoryName(path);
             }
         }
-
-
 
         #region BalanceMethods
         internal static DataTable LowestOpeningBalance(DataTable table, string studio)
