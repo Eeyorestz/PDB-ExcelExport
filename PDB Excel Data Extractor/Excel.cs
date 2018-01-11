@@ -45,6 +45,7 @@ namespace PDB_Excel_Data_Extractor
 
         public void ExportToExcel(DataTable resultTable, string fileLocation, string sheetName, string color = "", int numberOfLastRow = 0, int startingCellIndex = 1)
         {
+          
             XLWorkbook Workbook = new XLWorkbook(fileLocation);
             IXLWorksheet Worksheet = Workbook.Worksheet(sheetName);
 
@@ -88,8 +89,9 @@ namespace PDB_Excel_Data_Extractor
 
             for (int i = startIndex; i < NumberOfLastRow; i++)
             {
-                var validity = Convert.ToDateTime(Worksheet.Cell(i, 4).Value);
-                var todayDate = Convert.ToDateTime(date);
+                var cellValue = (Worksheet.Cell(i, 4).Value).ToString();
+                var validity = DateTime.ParseExact(cellValue, "dd.MM.yyyy", null);
+                var todayDate = DateTime.ParseExact(date, "dd.MM.yyyy",null);
                 IXLRow excelRow = Worksheet.Row(i);
                 if (DateTime.Compare(validity, todayDate) < 0)
                 {

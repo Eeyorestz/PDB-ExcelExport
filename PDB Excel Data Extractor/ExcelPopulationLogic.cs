@@ -51,7 +51,7 @@ namespace PDB_Excel_Data_Extractor
 
         private List<DataTable> StartingBalances = new List<DataTable>();
 
-        readonly string  expenseFile = AssemblyDirectory + @"\Zimnina\_Лютеница.xlsx";
+         string  expenseFile = AssemblyDirectory + @"\Zimnina\Лютеница.xlsx";
         public void SeedingSharedData(int year, int month)
         {
             try
@@ -74,7 +74,7 @@ namespace PDB_Excel_Data_Extractor
         public void summary(int year, int month, int day)
         {
              FolderPopulation folders = new FolderPopulation();
-             folders.ExtractDataToArchive(year, month, day);
+            // folders.ExtractDataToArchive(year, month, day);
              PopulatingForInstructors(year, month, day);
         }
 
@@ -129,13 +129,15 @@ namespace PDB_Excel_Data_Extractor
                         CardValidityPupulation(sheetInfo, Instructors()[g], studioName);
                     }
                 }
-                AvailabilityDataTable(sheetInfo);
+               // AvailabilityDataTable(sheetInfo);
                 MessageBox.Show("Завършена операция",
                     "Confirmation", MessageBoxButton.OK);
             }
             catch (Exception e)
             {
-               Logging error = new Logging();
+                MessageBox.Show("Възникна грешка",
+                   "Confirmation", MessageBoxButton.OK);
+                Logging error = new Logging();
                 error.LogError(e);
             }
            
@@ -183,7 +185,8 @@ namespace PDB_Excel_Data_Extractor
             for (int i = 0; i < sheetInfo.Rows.Count; i++)
             {
                 string honorary = sheetInfo.Rows[i][honoraryIndex].ToString();
-                if (honorary.Equals("")|| honorary.Equals("хонорар"))
+               
+                if (honorary.Equals("")|| honorary.Equals("хонорар")||i== sheetInfo.Rows.Count-1)
                 {
                     honorarySumToAdd = 0;
                 }

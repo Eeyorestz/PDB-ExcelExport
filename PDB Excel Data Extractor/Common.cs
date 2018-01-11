@@ -76,9 +76,9 @@ namespace PDB_Excel_Data_Extractor
         }
         internal static double DelimterConvertor(string number)
         {
-            if (number.Contains("."))
+            if (number.Contains(","))
             {
-                number = number.Replace(".", ",");
+                number = number.Replace(",", ".");
             }
             return Double.Parse(number);
         }
@@ -86,22 +86,22 @@ namespace PDB_Excel_Data_Extractor
         {
             int sumToAdd = 0;
             
-            switch (workoutType)
+            switch (workoutType.Trim())
             {
-                case "пол денс":
-                case "пол фит":
-                case "екзотик пол денс":
-                case "въздушна акробатика":
+                case "Пол денс":
+                case "Пол фит":
+                case "Екзотик":
+                case "Въздушна акробатика":
                     sumToAdd = 18;
                     break;
-                case "въздушна йога":
+                case "Въздушна йога":
                     sumToAdd = 15;
                     break;
-                case "стречинг":
-                case "йога":
-                case "детска йога":
-                case "детска акробатика":
-                case "хендстенд":
+                case "Стречинг":
+                case "Йога":
+                case "Детска йога":
+                case "Детска акробатика":
+                case "Баланс на ръце":
                     sumToAdd = 12;
                     break;
             }
