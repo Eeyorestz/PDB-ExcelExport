@@ -202,10 +202,6 @@ namespace PDB_Excel_Data_Extractor
         #endregion
 
 
-
-
-
-
         private static bool FilledFileCheck(string pathFile)
         {
             bool check = false;

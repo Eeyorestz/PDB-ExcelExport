@@ -1,5 +1,4 @@
-﻿
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Data;
 using System.IO;
@@ -14,12 +13,12 @@ namespace PDB_Excel_Data_Extractor
     {
 
         #region InstructorsSheetIndexes
-        private int nOfCardIndex ;
-        private int typeOfGoodIndex ;
-        private int firstAndFamiliyNameIndex ;
-        private int honoraryIndex ;
-        private int moneyIndex ;
-        private int receiptIndex ;
+        private int nOfCardIndex;
+        private int typeOfGoodIndex;
+        private int firstAndFamiliyNameIndex;
+        private int honoraryIndex;
+        private int moneyIndex;
+        private int receiptIndex;
         private int additionalInfoIndex;
 
 
@@ -47,11 +46,12 @@ namespace PDB_Excel_Data_Extractor
 
         #endregion
         private string date = "";
-      
+        ExcelReader reader = new ExcelReader();
+        private string[] StudioNames = new[] { "Студентски", "Лозенец", "Център" };
 
         private List<DataTable> StartingBalances = new List<DataTable>();
 
-         string  expenseFile = AssemblyDirectory + @"\Zimnina\Лютеница.xlsx";
+        string expenseFile = AssemblyDirectory + @"\Zimnina\Лютеница.xlsx";
         public void SeedingSharedData(int year, int month)
         {
             try
@@ -69,20 +69,20 @@ namespace PDB_Excel_Data_Extractor
             {
                 Logging error = new Logging();
                 error.LogError(e);
-            }    
+            }
         }
         public void summary(int year, int month, int day)
         {
-             FolderPopulation folders = new FolderPopulation();
-            // folders.ExtractDataToArchive(year, month, day);
-             PopulatingForInstructors(year, month, day);
+            FolderPopulation folders = new FolderPopulation();
+             folders.ExtractDataToArchive(year, month, day);
+            PopulatingForInstructors(year, month, day);
         }
 
         private void PopulatingForInstructors(int year, int month, int day)
         {
             try
             {
-                ExcelReader reader = new ExcelReader();
+              
                 DataTable sheetInfo = null;
 
 
@@ -101,16 +101,17 @@ namespace PDB_Excel_Data_Extractor
                         string studioName = Path.GetFileName(namesOfStudios[p]);
                         studioName = studioName.Substring(0, studioName.Length - 5);
 
+                        MultiSportIncome(sheetInfo, Instructors()[g], month);
 
                         if (studioName.Equals("Студентски"))
                         {
                             reader.ExportToExcel(IncomeDataTable(sheetInfo, Instructors()[g], studioName, ТrueExpense(sheetInfo)), AssemblyDirectory + @"\Zimnina\_Компот-Студентски.xlsx", "Приход");
-                            reader.ExportToExcel(ExpenseDataTable(sheetInfo, Instructors()[g], studioName, year, month, day), AssemblyDirectory + @"\Zimnina\_Компот-Студентски.xlsx", "Разход");
+                            reader.ExportToExcel(ExpenseDataTable(sheetInfo, Instructors()[g], studioName), AssemblyDirectory + @"\Zimnina\_Компот-Студентски.xlsx", "Разход");
                         }
                         else
                         {
                             reader.ExportToExcel(IncomeDataTable(sheetInfo, Instructors()[g], studioName, ТrueExpense(sheetInfo)), AssemblyDirectory + @"\Zimnina\_Компот-ЦЛ.xlsx", "Приход");
-                            reader.ExportToExcel(ExpenseDataTable(sheetInfo, Instructors()[g], studioName, year, month, day), AssemblyDirectory + @"\Zimnina\_Компот-ЦЛ.xlsx", "Разход");
+                            reader.ExportToExcel(ExpenseDataTable(sheetInfo, Instructors()[g], studioName), AssemblyDirectory + @"\Zimnina\_Компот-ЦЛ.xlsx", "Разход");
                         }
 
                         List<DataTable> data = CardValidityDataTable(sheetInfo, ТrueExpense(sheetInfo), year, month, day);
@@ -129,7 +130,7 @@ namespace PDB_Excel_Data_Extractor
                         CardValidityPupulation(sheetInfo, Instructors()[g], studioName);
                     }
                 }
-               // AvailabilityDataTable(sheetInfo);
+                // AvailabilityDataTable(sheetInfo);
                 MessageBox.Show("Завършена операция",
                     "Confirmation", MessageBoxButton.OK);
             }
@@ -140,9 +141,9 @@ namespace PDB_Excel_Data_Extractor
                 Logging error = new Logging();
                 error.LogError(e);
             }
-           
+
         }
-        private DataTable IncomeDataTable(DataTable sheetInfo,string instrctorName, string studioName ,List<int> trueExpenses)
+        private DataTable IncomeDataTable(DataTable sheetInfo, string instrctorName, string studioName, List<int> trueExpenses)
         {
             DataStrctures structure = new DataStrctures();
             DataTable table = structure.IncomeDataTableStructure();
@@ -162,7 +163,7 @@ namespace PDB_Excel_Data_Extractor
                 switch (studioName)
                 {
                     case "Лозенец":
-                        LozenecIncome = LozenecIncome+Convert.ToDouble(Money);
+                        LozenecIncome = LozenecIncome + Convert.ToDouble(Money);
                         break;
                     case "Студентски":
                         StudentskiIncome = StudentskiIncome + Convert.ToDouble(Money);
@@ -175,7 +176,7 @@ namespace PDB_Excel_Data_Extractor
             }
             return table;
         }
-        private DataTable ExpenseDataTable(DataTable sheetInfo, string instrctorName, string studioName,  int year, int month, int day)
+        private DataTable ExpenseDataTable(DataTable sheetInfo, string instrctorName, string studioName)
         {
             DataStrctures structure = new DataStrctures();
             DataTable table = structure.ExpenseDataTableStructure();
@@ -185,8 +186,8 @@ namespace PDB_Excel_Data_Extractor
             for (int i = 0; i < sheetInfo.Rows.Count; i++)
             {
                 string honorary = sheetInfo.Rows[i][honoraryIndex].ToString();
-               
-                if (honorary.Equals("")|| honorary.Equals("хонорар")||i== sheetInfo.Rows.Count-1)
+
+                if (honorary.Equals("") || honorary.Equals("хонорар") || i == sheetInfo.Rows.Count - 1)
                 {
                     honorarySumToAdd = 0;
                 }
@@ -199,7 +200,7 @@ namespace PDB_Excel_Data_Extractor
             switch (studioName)
             {
                 case "Лозенец":
-                    LozenecHonorary = LozenecHonorary+ honorarySum;
+                    LozenecHonorary = LozenecHonorary + honorarySum;
                     break;
                 case "Студентски":
                     StudentskiHonorary = StudentskiHonorary + honorarySum;
@@ -213,10 +214,10 @@ namespace PDB_Excel_Data_Extractor
         }
         private List<DataTable> CardValidityDataTable(DataTable sheetInfo, List<int> trueExpenses, int year, int month, int day)
         {
-            DataStrctures structure = new DataStrctures();   
+            DataStrctures structure = new DataStrctures();
             List<DataTable> listOfTables = new List<DataTable>();
             MoneyData moneyData = new MoneyData();
-           
+
             for (int i = 0; i < trueExpenses.Count; i++)
             {
                 DataTable table = structure.CardValidityTableStructure();
@@ -228,36 +229,65 @@ namespace PDB_Excel_Data_Extractor
                 var typeOfood = sheetInfo.Rows[indexOfRow][typeOfGoodIndex].ToString();
                 var ammountOfMoney = moneyData.Ammout(money, typeOfood);
                 var ValidityTo = moneyData.CardPeriodExpiration(year, month, day, ammountOfMoney);
-                if (!cardName.Equals("")|| typeOfood.Equals("ваучер"))
+                if (!cardName.Equals("") || typeOfood.Equals("ваучер"))
                 {
-                    table.Rows.Add(cardName, firstAndFamilyName, date, ValidityTo, typeOfood ,wayOfPaying, ammountOfMoney);
+                    table.Rows.Add(cardName, firstAndFamilyName, date, ValidityTo, typeOfood, wayOfPaying, ammountOfMoney);
                     listOfTables.Add(table);
                 }
             }
             return listOfTables;
         }
+        private DataTable MultiSportIncome(DataTable sheetInfo, string instrctorName, int month)
+        {
+            DataStrctures structure = new DataStrctures();
+            DataTable table = structure.MultisportIncomeDataStructure();
+            double honorarySum = 0;
+            double honorarySumToAdd = 0;
+            for (int i = 0; i < sheetInfo.Rows.Count; i++)
+            {
+                if (sheetInfo.Rows[i][typeOfGoodIndex].ToString().Equals("Multisport"))
+                {
+                    string honorary = sheetInfo.Rows[i][honoraryIndex].ToString();
 
+                    if (honorary.Equals("") || honorary.Equals("хонорар") || i == sheetInfo.Rows.Count - 1)
+                    {
+                        honorarySumToAdd = 0;
+                    }
+                    else
+                    {
+                        honorarySumToAdd = DelimterConvertor(honorary);
+                    }
+                    honorarySum = honorarySum + honorarySumToAdd;
+                }
+            }
+            var newSheetData = reader.ExcelToDataTable("", "");
+           
+
+            table.Rows.Add(honorarySum);
+            
+            return table;
+        }
         private void AvailabilityDataTable(DataTable sheetInfo)
         {
-            DataStrctures structure = new DataStrctures();      
+            DataStrctures structure = new DataStrctures();
             ExcelReader reader = new ExcelReader();
-            DataTable BalanceSheet = reader.ExcelToDataTable("Наличност", AssemblyDirectory + @"\Zimnina\_Компот-ЦЛ.xlsx" );
-            int startingRow =   StartingRowForExport(BalanceSheet, date);
+            DataTable BalanceSheet = reader.ExcelToDataTable("Наличност", AssemblyDirectory + @"\Zimnina\_Компот-ЦЛ.xlsx");
+            int startingRow = StartingRowForExport(BalanceSheet, date);
 
-            for (int i = 0; i < StudioNames().Count; i++)
+            for (int i = 0; i < StudioNames.Length; i++)
             {
-                var lowestBalance = LowestAmmountPopulating(StudioNames()[i], StartingBalances,"Balance");
-                var cashRegisterLowestBalance = LowestAmmountPopulating(StudioNames()[i], StartingBalances, "CashRegister");
+                var lowestBalance = LowestAmmountPopulating(StudioNames[i], StartingBalances, "Balance");
+                var cashRegisterLowestBalance = LowestAmmountPopulating(StudioNames[i], StartingBalances, "CashRegister");
                 DataTable table = new DataTable();
-               
-                if (StudioNames()[i].Equals("Студентски"))
+
+                if (StudioNames[i].Equals("Студентски"))
                 {
                     table = structure.AvailabilityTableStructure(date, lowestBalance, StudentskiIncome, StudentskiHonorary, "", cashRegisterLowestBalance);
                     reader.ExportToExcel(table, AssemblyDirectory + @"\Zimnina\_Компот-Студентски.xlsx", "Наличност", numberOfLastRow: startingRow);
                 }
                 else
                 {
-                    if (StudioNames()[i].Equals("Лозенец"))
+                    if (StudioNames[i].Equals("Лозенец"))
                     {
                         table = structure.AvailabilityTableStructure(date, lowestBalance, LozenecIncome, LozenecHonorary, "", cashRegisterLowestBalance);
                         reader.ExportToExcel(table, AssemblyDirectory + @"\Zimnina\_Компот-ЦЛ.xlsx", "Наличност", numberOfLastRow: startingRow, startingCellIndex: 8);
@@ -279,13 +309,13 @@ namespace PDB_Excel_Data_Extractor
             var workouts = indexes.ListOfWorkouts(sheetInfo);
             var workoutsIndexes = indexes.Ranges(sheetInfo);
             var workoutType = "";
-            
+
             for (int i = 0; i < sheetInfo.Rows.Count; i++)
             {
                 var cardName = sheetInfo.Rows[i][nOfCardIndex].ToString();
                 var typeOfGood = sheetInfo.Rows[i][typeOfGoodIndex].ToString();
                 var ammount = 0;
-                if (!cardName.Equals("") && !cardName.Equals("N: на карта")&& !typeOfGood.Equals("ваучер"))
+                if (!cardName.Equals("") && !cardName.Equals("N: на карта") && !typeOfGood.Equals("ваучер"))
                 {
                     for (int j = 0; j < workouts.Count; j++)
                     {
@@ -299,7 +329,7 @@ namespace PDB_Excel_Data_Extractor
                                 ammount = int.Parse(expenseInfo.Rows[cardRowNumber][cardColumnNumber].ToString());
                             }
                             var sum = SumForWorkoutType(ammount, workoutType).ToString();
-                            excel.EditCellValue(expenseFile, "Справка карти", sum ,cardRowNumber+1, cardColumnNumber+1);                       
+                            excel.EditCellValue(expenseFile, "Справка карти", sum, cardRowNumber + 1, cardColumnNumber + 1);
                             break;
                         }
                     }
@@ -311,9 +341,9 @@ namespace PDB_Excel_Data_Extractor
         {
             List<int> list = new List<int>();
             for (int i = 0; i < sheetInfo.Rows.Count; i++)
-            { 
+            {
                 if (!sheetInfo.Rows[i][moneyIndex].ToString().Equals("") &&
-                     !sheetInfo.Rows[i][moneyIndex].ToString().Equals("карта/ пари") 
+                     !sheetInfo.Rows[i][moneyIndex].ToString().Equals("карта/ пари")
                     && !sheetInfo.Rows[i][0].ToString().Equals("Общо: "))
                 {
                     list.Add(i);
@@ -321,14 +351,7 @@ namespace PDB_Excel_Data_Extractor
             }
             return list;
         }
-        private List<string> StudioNames()
-        {
-            List<string> list = new List<string>();
-            list.Add("Студентски");
-            list.Add("Лозенец");
-            list.Add("Център");
-            return list;
-        }
+        
 
         #region IndexPopulation
         private void ColumnIndexGetterInstructorFile(DataTable sheetInfo)

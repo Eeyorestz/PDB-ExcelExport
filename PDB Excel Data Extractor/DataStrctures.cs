@@ -6,7 +6,7 @@ namespace PDB_Excel_Data_Extractor
 {
     public class DataStrctures
     {
-        public DataTable IncomeDataTableStructure()
+        protected internal DataTable IncomeDataTableStructure()
         {
             DataTable table = new DataTable();
             table.Columns.Add("Date", typeof(string));
@@ -19,7 +19,7 @@ namespace PDB_Excel_Data_Extractor
             table.Columns.Add("Money", typeof(string));
             return table;
         }
-        public DataTable ExpenseDataTableStructure()
+        protected internal DataTable ExpenseDataTableStructure()
         {
             DataTable table = new DataTable();
             table.Columns.Add("Date", typeof(string));
@@ -29,7 +29,7 @@ namespace PDB_Excel_Data_Extractor
             table.Columns.Add("Honorary", typeof(string));
             return table;
         }
-        public DataTable CardValidityTableStructure()
+        protected internal DataTable CardValidityTableStructure()
         {
             DataTable table = new DataTable();
             table.Columns.Add("NumberOfCard", typeof(string));
@@ -41,7 +41,7 @@ namespace PDB_Excel_Data_Extractor
             table.Columns.Add("ActualAmmount", typeof(int));
             return table;
         }
-        public DataTable AvailabilityTableStructure(string date, double lowestBalance, double income, double honorary, string clarifications, double cashRegisterValue )
+        protected internal DataTable AvailabilityTableStructure(string date, double lowestBalance, double income, double honorary, string clarifications, double cashRegisterValue )
         {
             DataTable table = new DataTable();
             table.Columns.Add("Date", typeof(string));
@@ -58,7 +58,7 @@ namespace PDB_Excel_Data_Extractor
 
             return table;
         }
-        public DataTable StartingBalanceTableStructure()
+        protected internal DataTable StartingBalanceTableStructure()
         {
             DataTable table = new DataTable();
             table.Columns.Add("Time", typeof(string));
@@ -67,7 +67,7 @@ namespace PDB_Excel_Data_Extractor
             table.Columns.Add("Studio", typeof(string));
             return table;
         }
-        public DataTable BananasDataTableStructure()
+        protected internal DataTable BananasDataTableStructure()
         {
             DataTable table = new DataTable();
             table.Columns.Add("NumberOfCard", typeof(string));
@@ -77,6 +77,13 @@ namespace PDB_Excel_Data_Extractor
             table.Columns.Add("Money", typeof(string));
             table.Columns.Add("Recepiet", typeof(string));
             table.Columns.Add("WayOfPaying", typeof(string));           
+            return table;
+        }
+
+        protected internal DataTable MultisportIncomeDataStructure()
+        {
+            DataTable table = new DataTable();
+            table.Columns.Add("Income", typeof(string));
             return table;
         }
     }
