@@ -74,7 +74,7 @@ namespace PDB_Excel_Data_Extractor
         public void summary(int year, int month, int day)
         {
              FolderPopulation folders = new FolderPopulation();
-            // folders.ExtractDataToArchive(year, month, day);
+             folders.ExtractDataToArchive(year, month, day);
              PopulatingForInstructors(year, month, day);
         }
 
