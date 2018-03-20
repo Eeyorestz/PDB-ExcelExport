@@ -57,8 +57,9 @@ namespace PDB_Excel_Data_Extractor
             int rowIndex = 0;
             for (int i = 0; i < dataTable.Rows.Count; i++)
             {
-                var ff = dataTable.Rows[i][0].ToString();
-                if (dataTable.Rows[i][0].ToString().Equals(cardName))
+                var ff = dataTable.Rows[i][0].ToString().ToUpper();
+             
+                if (dataTable.Rows[i][0].ToString().ToUpper().Equals(cardName.ToUpper()))
                 {
                     rowIndex = i;
                     break;

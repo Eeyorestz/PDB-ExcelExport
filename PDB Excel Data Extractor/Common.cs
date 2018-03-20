@@ -197,10 +197,37 @@ namespace PDB_Excel_Data_Extractor
             }
             return row;
         }
-      
+
 
         #endregion
-
+        internal static int MonthIndex(DataTable table, int month)
+        {
+            int monthIndex = 0;
+            var monthName = CultureInfo.CurrentCulture.DateTimeFormat.GetMonthName(month);
+            for (int i = 0; i < table.Columns.Count; i++)
+            {
+                if (table.Rows[0][i].ToString().Equals(monthName))
+                {
+                    monthIndex = i;
+                    break;
+                }
+            }
+            return monthIndex;
+        }
+        internal static int InstructorIndex(DataTable table, string InstructorName)
+        {
+            int instrucotrIndex = 0;     
+            for (int i = 0; i < table.Columns.Count; i++)
+            {
+                var name = table.Rows[i][0].ToString();
+                if (name.Equals(InstructorName))
+                {
+                    instrucotrIndex = i;
+                    break;
+                }
+            }
+            return instrucotrIndex;
+        }
 
         private static bool FilledFileCheck(string pathFile)
         {

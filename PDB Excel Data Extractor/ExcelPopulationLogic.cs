@@ -51,7 +51,7 @@ namespace PDB_Excel_Data_Extractor
 
         private List<DataTable> StartingBalances = new List<DataTable>();
 
-        string expenseFile = AssemblyDirectory + @"\Zimnina\Лютеница.xlsx";
+        string expenseFile = AssemblyDirectory + @"\Zimnina\_Лютеница.xlsx";
         public void SeedingSharedData(int year, int month)
         {
             try
@@ -74,7 +74,7 @@ namespace PDB_Excel_Data_Extractor
         public void summary(int year, int month, int day)
         {
             FolderPopulation folders = new FolderPopulation();
-             folders.ExtractDataToArchive(year, month, day);
+           // folders.ExtractDataToArchive(year, month, day);
             PopulatingForInstructors(year, month, day);
         }
 
@@ -101,7 +101,7 @@ namespace PDB_Excel_Data_Extractor
                         string studioName = Path.GetFileName(namesOfStudios[p]);
                         studioName = studioName.Substring(0, studioName.Length - 5);
 
-                        MultiSportIncome(sheetInfo, Instructors()[g], month);
+                       // MultiSportIncome(sheetInfo, Instructors()[g], month);
 
                         if (studioName.Equals("Студентски"))
                         {
@@ -127,10 +127,10 @@ namespace PDB_Excel_Data_Extractor
                             }
                         }
                         StartingBalances.Add(LowestOpeningBalance(sheetInfo, studioName));
-                        CardValidityPupulation(sheetInfo, Instructors()[g], studioName);
+                        //CardValidityPupulation(sheetInfo, Instructors()[g], studioName);
                     }
                 }
-                // AvailabilityDataTable(sheetInfo);
+                 AvailabilityDataTable(sheetInfo);
                 MessageBox.Show("Завършена операция",
                     "Confirmation", MessageBoxButton.OK);
             }
@@ -237,10 +237,10 @@ namespace PDB_Excel_Data_Extractor
             }
             return listOfTables;
         }
-        private DataTable MultiSportIncome(DataTable sheetInfo, string instrctorName, int month)
+        private void MultiSportIncome(DataTable sheetInfo, string instrctorName, int month)
         {
-            DataStrctures structure = new DataStrctures();
-            DataTable table = structure.MultisportIncomeDataStructure();
+            
+            DataTable table = new DataTable();
             double honorarySum = 0;
             double honorarySumToAdd = 0;
             for (int i = 0; i < sheetInfo.Rows.Count; i++)
@@ -260,12 +260,19 @@ namespace PDB_Excel_Data_Extractor
                     honorarySum = honorarySum + honorarySumToAdd;
                 }
             }
-            var newSheetData = reader.ExcelToDataTable("", "");
-           
+            var newSheetData = reader.ExcelToDataTable("MultisportIncome", @"C:\pdb\MultisportIncome.xlsx");
+            var column = MonthIndex(newSheetData, month);
+            var row = InstructorIndex(newSheetData, instrctorName);
+            double sum = 0;
+            string sumString = newSheetData.Rows[row][column].ToString();
+            if (!sumString.Equals(""))
+            {
+                sum = Convert.ToDouble(sumString);
+            }
+          
+            honorarySum = sum + honorarySum;
+            reader.EditCellValue(@"C:\pdb\MultisportIncome.xlsx", "MultisportIncome", honorarySum.ToString(), row+1, column+1);
 
-            table.Rows.Add(honorarySum);
-            
-            return table;
         }
         private void AvailabilityDataTable(DataTable sheetInfo)
         {
