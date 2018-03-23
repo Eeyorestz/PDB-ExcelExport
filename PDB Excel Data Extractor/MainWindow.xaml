@@ -11,11 +11,11 @@
             <TabItem Header="Пълнене на дневни данни">
                 <Grid>
                     <Label Content="Въведете година:" Name="YearLabel" Margin="171,20,218.8,235"/>
-                    <TextBox Name="YearInput" Margin="171,57,239.8,209"  />
+                    <TextBox Name="YearInput" Margin="171,53,251,200"  />
                     <Label Content="Въведете номер на месец:" Name="MonthLabel" Margin="171,93,175.8,162"/>
-                    <TextBox Name="MonthInput" Margin="171,130,239.8,136"  />
+                    <TextBox Name="MonthInput" Margin="171,130,240,126"  />
                     <Label Content="Въведете номер на ден:" Name="MyLabel3" Margin="171,162,189.8,93"/>
-                    <TextBox Name="DayInput" Margin="171,199,239.8,67"  />
+                    <TextBox Name="DayInput" Margin="171,199,240,58"  />
                     <Button Content="Submit"
                 HorizontalAlignment="Left"
                 Margin="184,250,0,0"

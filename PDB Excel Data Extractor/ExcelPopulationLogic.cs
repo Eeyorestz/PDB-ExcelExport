@@ -101,7 +101,7 @@ namespace PDB_Excel_Data_Extractor
                         string studioName = Path.GetFileName(namesOfStudios[p]);
                         studioName = studioName.Substring(0, studioName.Length - 5);
 
-                       // MultiSportIncome(sheetInfo, Instructors()[g], month);
+                       
 
                         if (studioName.Equals("Студентски"))
                         {
@@ -127,6 +127,7 @@ namespace PDB_Excel_Data_Extractor
                             }
                         }
                         StartingBalances.Add(LowestOpeningBalance(sheetInfo, studioName));
+                        MultiSportIncome(sheetInfo, Instructors()[g], month);
                         //CardValidityPupulation(sheetInfo, Instructors()[g], studioName);
                     }
                 }
