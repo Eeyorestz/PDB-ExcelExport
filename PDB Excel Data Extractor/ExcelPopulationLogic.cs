@@ -107,11 +107,13 @@ namespace PDB_Excel_Data_Extractor
                         {
                             reader.ExportToExcel(IncomeDataTable(sheetInfo, Instructors()[g], studioName, ТrueExpense(sheetInfo)), AssemblyDirectory + @"\Zimnina\_Компот-Студентски.xlsx", "Приход");
                             reader.ExportToExcel(ExpenseDataTable(sheetInfo, Instructors()[g], studioName), AssemblyDirectory + @"\Zimnina\_Компот-Студентски.xlsx", "Разход");
+                            MultiSportIncome(sheetInfo, Instructors()[g], month, AssemblyDirectory + @"\Zimnina\_Компот-Студентски.xlsx");
                         }
                         else
                         {
                             reader.ExportToExcel(IncomeDataTable(sheetInfo, Instructors()[g], studioName, ТrueExpense(sheetInfo)), AssemblyDirectory + @"\Zimnina\_Компот-ЦЛ.xlsx", "Приход");
                             reader.ExportToExcel(ExpenseDataTable(sheetInfo, Instructors()[g], studioName), AssemblyDirectory + @"\Zimnina\_Компот-ЦЛ.xlsx", "Разход");
+                            MultiSportIncome(sheetInfo, Instructors()[g], month, AssemblyDirectory + @"\Zimnina\_Компот-ЦЛ.xlsx");
                         }
 
                         List<DataTable> data = CardValidityDataTable(sheetInfo, ТrueExpense(sheetInfo), year, month, day);
@@ -127,7 +129,7 @@ namespace PDB_Excel_Data_Extractor
                             }
                         }
                         StartingBalances.Add(LowestOpeningBalance(sheetInfo, studioName));
-                        MultiSportIncome(sheetInfo, Instructors()[g], month);
+                       
                         //CardValidityPupulation(sheetInfo, Instructors()[g], studioName);
                     }
                 }
@@ -238,7 +240,7 @@ namespace PDB_Excel_Data_Extractor
             }
             return listOfTables;
         }
-        private void MultiSportIncome(DataTable sheetInfo, string instrctorName, int month)
+        private void MultiSportIncome(DataTable sheetInfo, string instrctorName, int month, string filePath)
         {
             
             DataTable table = new DataTable();
@@ -261,7 +263,8 @@ namespace PDB_Excel_Data_Extractor
                     honorarySum = honorarySum + honorarySumToAdd;
                 }
             }
-            var newSheetData = reader.ExcelToDataTable("MultisportIncome", @"C:\pdb\MultisportIncome.xlsx");
+
+            var newSheetData = reader.ExcelToDataTable("MultisportIncome", filePath);
             var column = MonthIndex(newSheetData, month);
             var row = InstructorIndex(newSheetData, instrctorName);
             double sum = 0;
@@ -272,8 +275,22 @@ namespace PDB_Excel_Data_Extractor
             }
           
             honorarySum = sum + honorarySum;
-            reader.EditCellValue(@"C:\pdb\MultisportIncome.xlsx", "MultisportIncome", honorarySum.ToString(), row+1, column+1);
-
+            reader.EditCellValue(filePath, "MultisportIncome", InstructorMonthHonorary(instrctorName, filePath, "Разход"), row + 1, column + 1);
+            reader.EditCellValue(filePath, "MultisportIncome", honorarySum.ToString(), row+1, column+2);
+        }
+        private string InstructorMonthHonorary(string instrctorName, string filePath, string sheetName)
+        {
+            double midSum = 0;
+            var table = reader.ExcelToDataTable(sheetName, filePath);
+            for (int i = 0; i < table.Rows.Count; i++)
+            {
+                string ff = table.Rows[i][3].ToString();
+                if (table.Rows[i][3].ToString().Equals(instrctorName))
+                {
+                    midSum = midSum + Convert.ToDouble(table.Rows[i][4]);
+                }
+            }
+            return midSum.ToString();
         }
         private void AvailabilityDataTable(DataTable sheetInfo)
         {
