@@ -24,11 +24,11 @@ namespace PDB_Excel_Data_Extractor
         {
             InitializeComponent();
             ExcelPopulationLogic excel = new ExcelPopulationLogic();
-            //excel.summary();
+            
         }
         private void Button_Click(object sender, RoutedEventArgs e)
         {
-            //MyLabel.Content = MyTextBox.Text;
+        
             int year = int.Parse(YearInput.Text);
             int month = int.Parse(MonthInput.Text);
             int day = int.Parse(DayInput.Text);

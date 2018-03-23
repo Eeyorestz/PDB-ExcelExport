@@ -101,35 +101,35 @@ namespace PDB_Excel_Data_Extractor
                         string studioName = Path.GetFileName(namesOfStudios[p]);
                         studioName = studioName.Substring(0, studioName.Length - 5);
 
-                       
 
-                        if (studioName.Equals("Студентски"))
-                        {
-                            reader.ExportToExcel(IncomeDataTable(sheetInfo, Instructors()[g], studioName, ТrueExpense(sheetInfo)), AssemblyDirectory + @"\Zimnina\_Компот-Студентски.xlsx", "Приход");
-                            reader.ExportToExcel(ExpenseDataTable(sheetInfo, Instructors()[g], studioName), AssemblyDirectory + @"\Zimnina\_Компот-Студентски.xlsx", "Разход");
-                            MultiSportIncome(sheetInfo, Instructors()[g], month, AssemblyDirectory + @"\Zimnina\_Компот-Студентски.xlsx");
-                        }
-                        else
-                        {
-                            reader.ExportToExcel(IncomeDataTable(sheetInfo, Instructors()[g], studioName, ТrueExpense(sheetInfo)), AssemblyDirectory + @"\Zimnina\_Компот-ЦЛ.xlsx", "Приход");
-                            reader.ExportToExcel(ExpenseDataTable(sheetInfo, Instructors()[g], studioName), AssemblyDirectory + @"\Zimnina\_Компот-ЦЛ.xlsx", "Разход");
-                            MultiSportIncome(sheetInfo, Instructors()[g], month, AssemblyDirectory + @"\Zimnina\_Компот-ЦЛ.xlsx");
-                        }
 
-                        List<DataTable> data = CardValidityDataTable(sheetInfo, ТrueExpense(sheetInfo), year, month, day);
-                        for (int w = 0; w < data.Count; w++)
-                        {
-                            if (data[w].Rows[0]["WayOfPaying"].ToString().Equals("50%"))
-                            {
-                                reader.ExportToExcel(data[w], expenseFile, "Справка карти", "Red");
-                            }
-                            else
-                            {
-                                reader.ExportToExcel(data[w], expenseFile, "Справка карти");
-                            }
-                        }
-                        StartingBalances.Add(LowestOpeningBalance(sheetInfo, studioName));
-                       
+                        //if (studioName.Equals("Студентски"))
+                        //{
+                        //    reader.ExportToExcel(IncomeDataTable(sheetInfo, Instructors()[g], studioName, ТrueExpense(sheetInfo)), AssemblyDirectory + @"\Zimnina\_Компот-Студентски.xlsx", "Приход");
+                        //    reader.ExportToExcel(ExpenseDataTable(sheetInfo, Instructors()[g], studioName), AssemblyDirectory + @"\Zimnina\_Компот-Студентски.xlsx", "Разход");
+                        //    MultiSportIncome(sheetInfo, Instructors()[g], month, AssemblyDirectory + @"\Zimnina\_Компот-Студентски.xlsx");
+                        //}
+                        //else
+                        //{
+                        //    reader.ExportToExcel(IncomeDataTable(sheetInfo, Instructors()[g], studioName, ТrueExpense(sheetInfo)), AssemblyDirectory + @"\Zimnina\_Компот-ЦЛ.xlsx", "Приход");
+                        //    reader.ExportToExcel(ExpenseDataTable(sheetInfo, Instructors()[g], studioName), AssemblyDirectory + @"\Zimnina\_Компот-ЦЛ.xlsx", "Разход");
+                        //    MultiSportIncome(sheetInfo, Instructors()[g], month, AssemblyDirectory + @"\Zimnina\_Компот-ЦЛ.xlsx");
+                        //}
+
+                        //List<DataTable> data = CardValidityDataTable(sheetInfo, ТrueExpense(sheetInfo), year, month, day);
+                        //for (int w = 0; w < data.Count; w++)
+                        //{
+                        //    if (data[w].Rows[0]["WayOfPaying"].ToString().Equals("50%"))
+                        //    {
+                        //        reader.ExportToExcel(data[w], expenseFile, "Справка карти", "Red");
+                        //    }
+                        //    else
+                        //    {
+                        //        reader.ExportToExcel(data[w], expenseFile, "Справка карти");
+                        //    }
+                        //}
+                        //StartingBalances.Add(LowestOpeningBalance(sheetInfo, studioName));
+
                         //CardValidityPupulation(sheetInfo, Instructors()[g], studioName);
                     }
                 }
@@ -242,7 +242,6 @@ namespace PDB_Excel_Data_Extractor
         }
         private void MultiSportIncome(DataTable sheetInfo, string instrctorName, int month, string filePath)
         {
-            
             DataTable table = new DataTable();
             double honorarySum = 0;
             double honorarySumToAdd = 0;
@@ -263,7 +262,6 @@ namespace PDB_Excel_Data_Extractor
                     honorarySum = honorarySum + honorarySumToAdd;
                 }
             }
-
             var newSheetData = reader.ExcelToDataTable("MultisportIncome", filePath);
             var column = MonthIndex(newSheetData, month);
             var row = InstructorIndex(newSheetData, instrctorName);
@@ -272,9 +270,9 @@ namespace PDB_Excel_Data_Extractor
             if (!sumString.Equals(""))
             {
                 sum = Convert.ToDouble(sumString);
-            }
-          
+            }      
             honorarySum = sum + honorarySum;
+
             reader.EditCellValue(filePath, "MultisportIncome", InstructorMonthHonorary(instrctorName, filePath, "Разход"), row + 1, column + 1);
             reader.EditCellValue(filePath, "MultisportIncome", honorarySum.ToString(), row+1, column+2);
         }
@@ -282,9 +280,17 @@ namespace PDB_Excel_Data_Extractor
         {
             double midSum = 0;
             var table = reader.ExcelToDataTable(sheetName, filePath);
-            for (int i = 0; i < table.Rows.Count; i++)
+            int index = 0;
+            for (int j = 0; j < table.Rows.Count; j++)
             {
-                string ff = table.Rows[i][3].ToString();
+                if (table.Rows[j][3].ToString().Equals("Инструктор:"))
+                {
+                    index = j;
+                    break;
+                }
+            }          
+            for (int i = index; i < table.Rows.Count; i++)
+            {
                 if (table.Rows[i][3].ToString().Equals(instrctorName))
                 {
                     midSum = midSum + Convert.ToDouble(table.Rows[i][4]);
@@ -295,7 +301,7 @@ namespace PDB_Excel_Data_Extractor
         private void AvailabilityDataTable(DataTable sheetInfo)
         {
             DataStrctures structure = new DataStrctures();
-            ExcelReader reader = new ExcelReader();
+            
             DataTable BalanceSheet = reader.ExcelToDataTable("Наличност", AssemblyDirectory + @"\Zimnina\_Компот-ЦЛ.xlsx");
             int startingRow = StartingRowForExport(BalanceSheet, date);
 

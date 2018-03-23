@@ -149,7 +149,9 @@ namespace PDB_Excel_Data_Extractor
         }
         internal static int DateTimeComparer(string timePeriodOne, string timePeriodTwo)
         {
-            int result = DateTime.Compare(Convert.ToDateTime(timePeriodOne), Convert.ToDateTime(timePeriodTwo));
+            var t1 = Convert.ToDateTime(timePeriodOne);
+            var t2 = DateTime.ParseExact(timePeriodTwo, "dd.MM.yyyy", CultureInfo.InvariantCulture);
+            int result = DateTime.Compare(t1, Convert.ToDateTime(timePeriodTwo));
             return result;
         }
         internal static double LowestAmmountPopulating(string studioName, List<DataTable> StartingBalances, string columnName)
@@ -188,8 +190,8 @@ namespace PDB_Excel_Data_Extractor
             int row = 0;
             for (int i = 2; i < table.Rows.Count; i++)
             {
-                var dateTime = Convert.ToDateTime(date).ToString();
-                if (DateTimeComparer(table.Rows[i][0].ToString(), dateTime) ==0)
+               
+                if (DateTimeComparer(table.Rows[i][0].ToString(), date) ==0)
                 {
                     row = i;
                     break;

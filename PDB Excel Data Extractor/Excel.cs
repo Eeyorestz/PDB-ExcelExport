@@ -90,6 +90,10 @@ namespace PDB_Excel_Data_Extractor
             for (int i = startIndex; i < NumberOfLastRow; i++)
             {
                 var cellValue = (Worksheet.Cell(i, 4).Value).ToString();
+                if (cellValue.Equals(""))
+                {
+                    break;
+                }
                 var validity = DateTime.ParseExact(cellValue, "dd.MM.yyyy", null);
                 var todayDate = DateTime.ParseExact(date, "dd.MM.yyyy",null);
                 IXLRow excelRow = Worksheet.Row(i);
