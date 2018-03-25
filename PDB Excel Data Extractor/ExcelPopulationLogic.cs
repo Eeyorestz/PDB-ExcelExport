@@ -103,34 +103,34 @@ namespace PDB_Excel_Data_Extractor
 
 
 
-                        //if (studioName.Equals("Студентски"))
-                        //{
-                        //    reader.ExportToExcel(IncomeDataTable(sheetInfo, Instructors()[g], studioName, ТrueExpense(sheetInfo)), AssemblyDirectory + @"\Zimnina\_Компот-Студентски.xlsx", "Приход");
-                        //    reader.ExportToExcel(ExpenseDataTable(sheetInfo, Instructors()[g], studioName), AssemblyDirectory + @"\Zimnina\_Компот-Студентски.xlsx", "Разход");
-                        //    MultiSportIncome(sheetInfo, Instructors()[g], month, AssemblyDirectory + @"\Zimnina\_Компот-Студентски.xlsx");
-                        //}
-                        //else
-                        //{
-                        //    reader.ExportToExcel(IncomeDataTable(sheetInfo, Instructors()[g], studioName, ТrueExpense(sheetInfo)), AssemblyDirectory + @"\Zimnina\_Компот-ЦЛ.xlsx", "Приход");
-                        //    reader.ExportToExcel(ExpenseDataTable(sheetInfo, Instructors()[g], studioName), AssemblyDirectory + @"\Zimnina\_Компот-ЦЛ.xlsx", "Разход");
-                        //    MultiSportIncome(sheetInfo, Instructors()[g], month, AssemblyDirectory + @"\Zimnina\_Компот-ЦЛ.xlsx");
-                        //}
+                        if (studioName.Equals("Студентски"))
+                        {
+                            reader.ExportToExcel(IncomeDataTable(sheetInfo, Instructors()[g], studioName, ТrueExpense(sheetInfo)), AssemblyDirectory + @"\Zimnina\_Компот-Студентски.xlsx", "Приход");
+                            reader.ExportToExcel(ExpenseDataTable(sheetInfo, Instructors()[g], studioName), AssemblyDirectory + @"\Zimnina\_Компот-Студентски.xlsx", "Разход");
+                            MultiSportIncome(sheetInfo, Instructors()[g], month, AssemblyDirectory + @"\Zimnina\_Компот-Студентски.xlsx");
+                        }
+                        else
+                        {
+                            reader.ExportToExcel(IncomeDataTable(sheetInfo, Instructors()[g], studioName, ТrueExpense(sheetInfo)), AssemblyDirectory + @"\Zimnina\_Компот-ЦЛ.xlsx", "Приход");
+                            reader.ExportToExcel(ExpenseDataTable(sheetInfo, Instructors()[g], studioName), AssemblyDirectory + @"\Zimnina\_Компот-ЦЛ.xlsx", "Разход");
+                            MultiSportIncome(sheetInfo, Instructors()[g], month, AssemblyDirectory + @"\Zimnina\_Компот-ЦЛ.xlsx");
+                        }
 
-                        //List<DataTable> data = CardValidityDataTable(sheetInfo, ТrueExpense(sheetInfo), year, month, day);
-                        //for (int w = 0; w < data.Count; w++)
-                        //{
-                        //    if (data[w].Rows[0]["WayOfPaying"].ToString().Equals("50%"))
-                        //    {
-                        //        reader.ExportToExcel(data[w], expenseFile, "Справка карти", "Red");
-                        //    }
-                        //    else
-                        //    {
-                        //        reader.ExportToExcel(data[w], expenseFile, "Справка карти");
-                        //    }
-                        //}
-                        //StartingBalances.Add(LowestOpeningBalance(sheetInfo, studioName));
+                        List<DataTable> data = CardValidityDataTable(sheetInfo, ТrueExpense(sheetInfo), year, month, day);
+                        for (int w = 0; w < data.Count; w++)
+                        {
+                            if (data[w].Rows[0]["WayOfPaying"].ToString().Equals("50%"))
+                            {
+                                reader.ExportToExcel(data[w], expenseFile, "Справка карти", "Red");
+                            }
+                            else
+                            {
+                                reader.ExportToExcel(data[w], expenseFile, "Справка карти");
+                            }
+                        }
+                        StartingBalances.Add(LowestOpeningBalance(sheetInfo, studioName));
 
-                        //CardValidityPupulation(sheetInfo, Instructors()[g], studioName);
+                        CardValidityPupulation(sheetInfo, Instructors()[g], studioName);
                     }
                 }
                  AvailabilityDataTable(sheetInfo);

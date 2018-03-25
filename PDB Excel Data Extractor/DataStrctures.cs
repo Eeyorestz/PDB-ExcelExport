@@ -1,6 +1,7 @@
 ﻿
 using System;
 using System.Data;
+using System.Globalization;
 
 namespace PDB_Excel_Data_Extractor
 {
@@ -50,11 +51,13 @@ namespace PDB_Excel_Data_Extractor
             table.Columns.Add("Clarifications", typeof(string));
             table.Columns.Add("SecondTypeOfBalance", typeof(string));
             table.Columns.Add("Secondum", typeof(double));
-         
-            table.Rows.Add(Convert.ToDateTime(date).ToString().Substring(0,12), "НС", lowestBalance, clarifications, "НС", lowestBalance);
-            table.Rows.Add(Convert.ToDateTime(date).ToString().Substring(0, 12), "Приход", income, clarifications, "Оборот ФУ", cashRegisterValue);
-            table.Rows.Add(Convert.ToDateTime(date).ToString().Substring(0, 12), "Разход", honorary, clarifications, "Изгеглени", 0);
-            table.Rows.Add(Convert.ToDateTime(date).ToString().Substring(0, 12), "КС", (lowestBalance + income) - honorary, clarifications, "КС");
+
+            var dateTw = DateTime.ParseExact(date, "dd.MM.yyyy",
+                                      CultureInfo.InvariantCulture);
+            table.Rows.Add(dateTw.ToString().Substring(0,12), "НС", lowestBalance, clarifications, "НС", lowestBalance);
+            table.Rows.Add(dateTw.ToString().Substring(0, 12), "Приход", income, clarifications, "Оборот ФУ", cashRegisterValue);
+            table.Rows.Add(dateTw.ToString().Substring(0, 12), "Разход", honorary, clarifications, "Изгеглени", 0);
+            table.Rows.Add(dateTw.ToString().Substring(0, 12), "КС", (lowestBalance + income) - honorary, clarifications, "КС");
 
             return table;
         }

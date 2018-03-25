@@ -149,9 +149,12 @@ namespace PDB_Excel_Data_Extractor
         }
         internal static int DateTimeComparer(string timePeriodOne, string timePeriodTwo)
         {
-            var t1 = Convert.ToDateTime(timePeriodOne);
-            var t2 = DateTime.ParseExact(timePeriodTwo, "dd.MM.yyyy", CultureInfo.InvariantCulture);
-            int result = DateTime.Compare(t1, Convert.ToDateTime(timePeriodTwo));
+          
+            var t1 = DateTime.ParseExact(timePeriodTwo, "dd.MM.yyyy",
+                                      CultureInfo.InvariantCulture);
+            DateTime t2 = DateTime.ParseExact(timePeriodTwo, "dd.MM.yyyy",
+                                      CultureInfo.InvariantCulture);
+            int result = DateTime.Compare(t1, t2);
             return result;
         }
         internal static double LowestAmmountPopulating(string studioName, List<DataTable> StartingBalances, string columnName)
