@@ -1,4 +1,5 @@
-﻿using System;
+﻿using PDB_Excel_Data_Extractor.Models;
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.IO;
@@ -24,19 +25,19 @@ namespace PDB_Excel_Data_Extractor
 
         #endregion
         #region CardInfoIndexes
-        private int poleDanceIndex;
-        private int stretchingIndex;
-        private int hathaYogaIndex;
-        private int airYogaIndex;
-        private int classicYogaIndex;
-        private int aerialPoleIndex;
-        private int exocitPoleDanceIndex;
-        private int kidsYogaIndex;
-        private int handStandIndex;
-        private int aerialYogaKids;
+        //private int poleDanceIndex;
+        //private int stretchingIndex;
+        //private int hathaYogaIndex;
+        //private int airYogaIndex;
+        //private int classicYogaIndex;
+        //private int aerialPoleIndex;
+        //private int exocitPoleDanceIndex;
+        //private int kidsYogaIndex;
+        //private int handStandIndex;
+        //private int aerialYogaKids;
         #endregion
         #region IncomeHonorarySums
-
+        //HonoraryAndIncome _honoraryAndIncome = new HonoraryAndIncome();
         private double CenterHonorary = 0;
         private double CenteryIncome = 0;
         private double LozenecHonorary = 0;
@@ -91,6 +92,7 @@ namespace PDB_Excel_Data_Extractor
                 for (int g = 0; g < Instructors().Length; g++)
                 {
                     string[] namesOfStudios = GetFileNames(year, MonthName(month), day, Instructors()[g]);
+                    var intstr = Instructors()[g];
                     for (int p = 0; p < namesOfStudios.Length; p++)
                     {
 

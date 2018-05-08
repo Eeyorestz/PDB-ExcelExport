@@ -149,13 +149,23 @@ namespace PDB_Excel_Data_Extractor
         }
         internal static int DateTimeComparer(string timePeriodOne, string timePeriodTwo)
         {
-          
-            var t1 = DateTime.ParseExact(timePeriodTwo, "dd.MM.yyyy",
+            int result = 0;
+            if (timePeriodOne.Length<6)
+            {
+                DateTime t1 = DateTime.Parse(timePeriodOne);
+                DateTime t2 = DateTime.Parse(timePeriodTwo);
+                result = TimeSpan.Compare(t1.TimeOfDay, t2.TimeOfDay);
+            }
+            else
+            {
+                var t1 = DateTime.ParseExact(timePeriodTwo, "dd.MM.yyyy",
                                       CultureInfo.InvariantCulture);
-            DateTime t2 = DateTime.ParseExact(timePeriodTwo, "dd.MM.yyyy",
-                                      CultureInfo.InvariantCulture);
-            int result = DateTime.Compare(t1, t2);
+                DateTime t2 = DateTime.ParseExact(timePeriodTwo, "dd.MM.yyyy",
+                                          CultureInfo.InvariantCulture);
+                 result = DateTime.Compare(t1, t2);
+            }
             return result;
+
         }
         internal static double LowestAmmountPopulating(string studioName, List<DataTable> StartingBalances, string columnName)
         {
