@@ -37,7 +37,7 @@ namespace PDB_Excel_Data_Extractor
         //private int aerialYogaKids;
         #endregion
         #region IncomeHonorarySums
-        //HonoraryAndIncome _honoraryAndIncome = new HonoraryAndIncome();
+        
         private double CenterHonorary = 0;
         private double CenteryIncome = 0;
         private double LozenecHonorary = 0;
@@ -131,7 +131,7 @@ namespace PDB_Excel_Data_Extractor
                             }
                         }
                         StartingBalances.Add(LowestOpeningBalance(sheetInfo, studioName));
-
+                        
                         CardValidityPupulation(sheetInfo, Instructors()[g], studioName);
                     }
                 }
